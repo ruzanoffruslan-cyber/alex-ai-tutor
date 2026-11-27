@@ -1,0 +1,3431 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#090d16" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Alex & Emma AI" />
+  <link id="pwa-manifest-link" rel="manifest" href="" />
+  <title>Alex & Emma AI — Репетитор и курс английского</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+          },
+          keyframes: {
+            eqBar: {
+              '0%, 100%': { transform: 'scaleY(0.3)' },
+              '50%': { transform: 'scaleY(1)' }
+            },
+            avatarTalk: {
+              '0%, 100%': { transform: 'scale(1)' },
+              '50%': { transform: 'scale(1.06)' }
+            }
+          },
+          animation: {
+            eqBar: 'eqBar 0.75s ease-in-out infinite',
+            avatarTalk: 'avatarTalk 1.1s ease-in-out infinite'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    html, body {
+      height: 100dvh;
+      margin: 0;
+      padding: 0;
+      background-color: #090d16;
+      color: #f1f5f9;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button, [role="button"], a, input, textarea, select {
+      touch-action: manipulation;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .speaking-ring {
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5), 0 0 18px rgba(99, 102, 241, 0.35);
+      animation: avatarTalk 1.1s ease-in-out infinite;
+    }
+    .speaking-ring-female {
+      box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.5), 0 0 18px rgba(236, 72, 153, 0.35);
+      animation: avatarTalk 1.1s ease-in-out infinite;
+    }
+    .eq-active span {
+      animation: eqBar 0.7s ease-in-out infinite;
+    }
+    .eq-active span:nth-child(2) { animation-delay: 0.12s; }
+    .eq-active span:nth-child(3) { animation-delay: 0.24s; }
+    .eq-active span:nth-child(4) { animation-delay: 0.36s; }
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .preserve-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
+
+  <!-- Верхняя панель -->
+  <header
+    class="shrink-0 bg-slate-900/95 backdrop-blur border-b border-slate-800/80 px-2.5 sm:px-5 py-2 flex items-center justify-between gap-2"
+    style="padding-top: calc(0.5rem + var(--safe-top));"
+  >
+    <div class="flex items-center gap-2 min-w-0">
+      <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+        </svg>
+      </div>
+      <div class="flex items-center gap-2 whitespace-nowrap">
+        <span id="header-brand-title" class="font-bold text-sm sm:text-lg tracking-tight text-white">Alex AI</span>
+        <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+          US Coach
+        </span>
+      </div>
+    </div>
+
+    <!-- Навигация по вкладкам на планшетах и ПК -->
+    <nav class="hidden md:flex items-center gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800">
+      <button type="button" data-tab="lessons" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white">
+        <span>🎓</span>
+        <span>Уроки</span>
+      </button>
+      <button type="button" data-tab="tutor" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-indigo-600 text-white">
+        <span>💬</span>
+        <span>Репетитор</span>
+      </button>
+      <button type="button" data-tab="vocab" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white">
+        <span>📚</span>
+        <span>Словарь</span>
+        <span class="vocab-count-badge px-1.5 py-0.5 rounded-full text-[10px] bg-slate-800 text-indigo-300">0</span>
+      </button>
+      <button type="button" data-tab="progress" class="nav-tab px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-slate-300 hover:text-white">
+        <span>🏆</span>
+        <span>Прогресс</span>
+      </button>
+    </nav>
+
+    <!-- Правые быстрые контролы -->
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <!-- Индикатор облачной синхронизации Gist -->
+      <button
+        type="button"
+        id="header-sync-btn"
+        class="px-2 py-1 rounded-xl text-[11px] font-semibold bg-slate-950 hover:bg-slate-800 text-slate-400 border border-slate-800 transition whitespace-nowrap flex items-center gap-1"
+        title="Статус облачной синхронизации GitHub Gist"
+      >
+        <span id="header-sync-icon">☁️</span>
+        <span id="header-profile-label" class="hidden sm:inline max-w-[70px] truncate">Локально</span>
+      </button>
+
+      <!-- Переключатель голоса US Male / Female -->
+      <div class="flex items-center bg-slate-950 border border-slate-800 rounded-xl p-0.5" title="Американский голос репетитора">
+        <button type="button" data-voice="male" class="voice-gender-btn px-2 py-1 rounded-lg text-[11px] font-semibold transition whitespace-nowrap">
+          👨 US
+        </button>
+        <button type="button" data-voice="female" class="voice-gender-btn px-2 py-1 rounded-lg text-[11px] font-semibold transition whitespace-nowrap">
+          👩 US
+        </button>
+      </div>
+
+      <span id="header-level-badge" class="hidden lg:inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 whitespace-nowrap">
+        • A2
+      </span>
+      <button
+        type="button"
+        id="open-add-word-btn"
+        class="px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 transition whitespace-nowrap flex items-center gap-1"
+      >
+        <span>+ Слово</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Основной контейнер экранов -->
+  <main class="flex-1 min-h-0 overflow-hidden relative">
+
+    <!-- ==================== ВКЛАДКА 0: ПОШАГОВЫЕ УРОКИ (ENGLISH GALAXY STYLE) ==================== -->
+    <section id="tab-lessons" class="hidden h-full max-w-4xl mx-auto overflow-y-auto p-3 sm:p-5 space-y-4" style="padding-bottom: calc(5rem + var(--safe-bottom));">
+      <!-- Список уроков курса -->
+      <div id="lessons-map-view" class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-white">Курс по формулам (A0 → B1)</h2>
+            <p class="text-xs text-slate-400">Короткая схема + отработка перевода с русского на английский до автоматизма</p>
+          </div>
+          <span id="lessons-completed-pill" class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+            Пройдено: 0 из 8
+          </span>
+        </div>
+
+        <div id="lessons-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+      </div>
+
+      <!-- Экран прохождения выбранного урока -->
+      <div id="lesson-player-view" class="hidden space-y-3.5">
+        <div class="flex items-center justify-between gap-2">
+          <button type="button" id="lesson-back-btn" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 transition">
+            ← Все уроки
+          </button>
+          <div class="flex items-center gap-2">
+            <span id="lesson-player-badge" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+              Урок 1
+            </span>
+            <button
+              type="button"
+              id="lesson-ai-more-btn"
+              class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 transition whitespace-nowrap"
+              title="Сгенерировать новые фразы по этой же формуле через Gemini 3"
+            >
+              ✨ +5 фраз по теме
+            </button>
+          </div>
+        </div>
+
+        <!-- Карточка формулы и примеров -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h3 id="lesson-title" class="font-bold text-base text-white"></h3>
+              <p id="lesson-subtitle" class="text-xs text-slate-400"></p>
+            </div>
+            <button type="button" id="toggle-formula-btn" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-800 text-indigo-300 hover:bg-slate-700 transition">
+              Скрыть схему
+            </button>
+          </div>
+
+          <div id="lesson-formula-body" class="space-y-2.5 pt-1 border-t border-slate-800/80">
+            <div id="lesson-formula-box" class="bg-slate-950 border border-indigo-500/30 rounded-xl p-3 text-xs sm:text-sm text-indigo-200 font-medium leading-relaxed"></div>
+            <div id="lesson-examples-list" class="space-y-1.5"></div>
+          </div>
+        </div>
+
+        <!-- Тренажёр перевода RU -> EN -->
+        <div id="lesson-drill-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 text-xs">
+              <span id="drill-counter" class="font-semibold text-slate-300">Фраза 1 из 6</span>
+              <span id="drill-score" class="text-emerald-400 font-semibold">Верно: 0</span>
+            </div>
+            <div class="flex items-center bg-slate-950 border border-slate-800 rounded-xl p-0.5">
+              <button type="button" data-drill-mode="tiles" class="drill-mode-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-600 text-white transition">
+                🧩 Плитки
+              </button>
+              <button type="button" data-drill-mode="type" class="drill-mode-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold text-slate-400 hover:text-white transition">
+                ⌨️ Текст / Голос
+              </button>
+            </div>
+          </div>
+
+          <div class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+            <div id="drill-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-emerald-400 transition-all duration-300" style="width: 15%;"></div>
+          </div>
+
+          <!-- Русское задание -->
+          <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 text-center space-y-1.5">
+            <p class="text-[11px] uppercase tracking-wider text-slate-500 font-semibold">Переведи на английский</p>
+            <p id="drill-ru-prompt" class="text-base sm:text-lg font-bold text-white leading-snug"></p>
+            <p id="drill-hint-text" class="hidden text-xs text-amber-300/90 pt-1"></p>
+          </div>
+
+          <!-- Режим 1: Сборка из плиток -->
+          <div id="drill-tiles-area" class="space-y-3">
+            <div id="drill-selected-words" class="min-h-[52px] p-2.5 rounded-xl bg-slate-950/90 border border-dashed border-slate-700 flex flex-wrap items-center gap-1.5">
+              <span class="text-xs text-slate-500">Нажимай на слова ниже, чтобы собрать фразу...</span>
+            </div>
+            <div id="drill-word-bank" class="flex flex-wrap justify-center gap-2 pt-1"></div>
+          </div>
+
+          <!-- Режим 2: Ручной ввод или микрофон -->
+          <div id="drill-type-area" class="hidden flex items-center gap-2">
+            <button
+              type="button"
+              id="drill-mic-btn"
+              class="w-11 h-11 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center justify-center shrink-0 transition"
+              title="Надиктовать перевод (en-US)"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+              </svg>
+            </button>
+            <input
+              type="text"
+              id="drill-text-input"
+              placeholder="Введи перевод на английском..."
+              class="flex-1 h-11 px-3.5 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+            />
+          </div>
+
+          <!-- Блок результата проверки -->
+          <div id="drill-feedback-box" class="hidden rounded-2xl p-3.5 border space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <p id="drill-feedback-title" class="text-sm font-bold"></p>
+              <div class="flex items-center gap-2">
+                <button type="button" id="drill-speak-answer-btn" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-indigo-300">
+                  🔊 Послушать
+                </button>
+                <button type="button" id="drill-save-phrase-btn" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-600/25 hover:bg-emerald-600/40 text-emerald-300 border border-emerald-500/30">
+                  + В словарь
+                </button>
+              </div>
+            </div>
+            <p id="drill-correct-en" class="text-sm text-white font-semibold"></p>
+            <p id="drill-grammar-note" class="text-xs text-slate-300"></p>
+          </div>
+
+          <!-- Кнопки действий тренажёра -->
+          <div class="flex items-center justify-between gap-2 pt-1">
+            <div class="flex items-center gap-2">
+              <button type="button" id="drill-hint-btn" class="px-3 py-2.5 rounded-xl text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition">
+                💡 Подсказка
+              </button>
+              <button type="button" id="drill-clear-btn" class="px-3 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 transition">
+                Сброс
+              </button>
+            </div>
+            <button type="button" id="drill-action-btn" class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition">
+              Проверить
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== ВКЛАДКА 1: РЕПЕТИТОР ==================== -->
+    <section id="tab-tutor" class="h-full max-w-6xl mx-auto flex flex-col md:flex-row gap-2 md:gap-4 p-2 sm:p-4 overflow-hidden">
+
+      <!-- Левая колонка -->
+      <aside class="shrink-0 md:w-80 lg:w-96 flex flex-col gap-2 md:gap-3 md:overflow-y-auto no-scrollbar">
+
+        <!-- Компактная плашка-переключатель для мобильных (< md) -->
+        <div class="md:hidden bg-slate-900/95 border border-slate-800 rounded-2xl px-3 py-2 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div id="tutor-avatar-mobile" class="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 p-0.5 shrink-0 transition-transform">
+              <div id="tutor-avatar-mobile-inner" class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center"></div>
+            </div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <span id="mobile-active-mode-label" class="text-xs font-bold text-white truncate">🎯 Тест уровня</span>
+                <span id="mobile-level-pill" class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-500/20 text-indigo-300">A2</span>
+              </div>
+              <p id="tutor-status-text-mobile" class="text-[11px] text-slate-400 truncate">Готов к диалогу</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <div id="voice-visualizer-mobile" class="flex items-end justify-center gap-0.5 h-4 opacity-40 transition-opacity">
+              <span class="w-0.5 h-1.5 bg-indigo-400 rounded-full"></span>
+              <span class="w-0.5 h-3 bg-cyan-400 rounded-full"></span>
+              <span class="w-0.5 h-4 bg-indigo-400 rounded-full"></span>
+              <span class="w-0.5 h-2 bg-cyan-400 rounded-full"></span>
+            </div>
+            <button
+              type="button"
+              id="toggle-mobile-controls-btn"
+              class="px-2.5 py-1.5 rounded-xl text-[11px] font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap flex items-center gap-1"
+            >
+              <span>Режимы</span>
+              <span id="mobile-controls-chevron">▾</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Раскрывающийся блок управления -->
+        <div id="tutor-controls-drawer" class="hidden md:flex flex-col gap-2.5 md:gap-3">
+          <div class="hidden md:flex bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex-col items-center justify-center gap-3">
+            <div id="tutor-avatar" class="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 p-0.5 shrink-0 transition-transform">
+              <div id="tutor-avatar-inner" class="w-full h-full rounded-full bg-slate-900 flex items-center justify-center"></div>
+            </div>
+            <div class="text-center min-w-0">
+              <div class="flex items-center justify-center gap-1.5">
+                <h1 id="tutor-name-heading" class="font-bold text-base text-white truncate">Alex</h1>
+                <span id="tutor-accent-badge" class="px-1.5 py-0.5 text-[10px] font-semibold rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                  🇺🇸 US Male
+                </span>
+              </div>
+              <p id="tutor-status-text" class="text-xs text-slate-400 truncate mt-0.5">
+                Готов говорить вслух
+              </p>
+            </div>
+            <div id="voice-visualizer" class="flex items-end justify-center gap-1 h-5 px-2 opacity-40 transition-opacity">
+              <span class="w-1 h-2 bg-indigo-400 rounded-full"></span>
+              <span class="w-1 h-4 bg-cyan-400 rounded-full"></span>
+              <span class="w-1 h-5 bg-indigo-400 rounded-full"></span>
+              <span class="w-1 h-3 bg-cyan-400 rounded-full"></span>
+            </div>
+          </div>
+
+          <!-- Выбор режима -->
+          <div class="grid grid-cols-2 gap-1.5 sm:gap-2">
+            <button type="button" data-mode="placement" class="mode-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white flex items-center justify-center gap-1.5 transition whitespace-nowrap">
+              <span>🎯</span>
+              <span>Тест уровня</span>
+            </button>
+            <button type="button" data-mode="freetalk" class="mode-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 flex items-center justify-center gap-1.5 transition whitespace-nowrap">
+              <span>💬</span>
+              <span>Свободный чат</span>
+            </button>
+            <button type="button" data-mode="scenarios" class="mode-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 flex items-center justify-center gap-1.5 transition whitespace-nowrap">
+              <span>🎭</span>
+              <span>Сценарии</span>
+            </button>
+            <button type="button" data-mode="grammar" class="mode-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 flex items-center justify-center gap-1.5 transition whitespace-nowrap">
+              <span>⚡</span>
+              <span>Грамматика</span>
+            </button>
+          </div>
+
+          <!-- Выбор подтемы для Сценариев и Грамматики -->
+          <div id="subtopic-picker-wrap" class="hidden bg-slate-900/90 border border-slate-800 rounded-2xl p-2.5 sm:p-3 space-y-2">
+            <div class="flex items-center justify-between">
+              <span id="subtopic-picker-label" class="text-[11px] font-semibold text-slate-300">Выбери тему:</span>
+              <span class="text-[10px] text-slate-500">нажми для старта</span>
+            </div>
+            <div id="subtopic-chips" class="flex flex-wrap gap-1.5"></div>
+          </div>
+
+          <!-- Информационный блок текущего режима -->
+          <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-3 space-y-1.5">
+            <div class="flex items-center justify-between text-xs">
+              <span id="mode-info-title" class="font-semibold text-slate-200">Диагностика CEFR</span>
+              <span id="placement-step-label" class="text-indigo-300 font-medium">Вопрос 1 из 6</span>
+            </div>
+            <div id="placement-progress-wrap" class="w-full h-1.5 rounded-full bg-slate-800 overflow-hidden">
+              <div id="placement-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-300" style="width: 16%;"></div>
+            </div>
+            <p id="mode-info-desc" class="text-[11px] text-slate-400 leading-relaxed">
+              Слушай вопрос репетитора и отвечай как умеешь. Нажимай на зелёные чипсы слов под репликами, чтобы сохранить их в словарь.
+            </p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Правая колонка: Диалог и поле ввода -->
+      <div class="flex-1 min-h-0 flex flex-col bg-slate-900/70 border border-slate-800/90 rounded-2xl overflow-hidden">
+        <div id="chat-messages" class="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3.5"></div>
+
+        <!-- Компактная панель управления звуком и подсказками -->
+        <div class="shrink-0 px-2.5 py-1.5 bg-slate-900/95 border-t border-slate-800/80 flex items-center justify-between gap-1.5 overflow-x-auto no-scrollbar">
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button
+              type="button"
+              id="hint-btn"
+              class="px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition whitespace-nowrap"
+            >
+              💡 Подсказка
+            </button>
+            <button
+              type="button"
+              id="toggle-autospeak-btn"
+              class="px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition whitespace-nowrap"
+            >
+              🔊 ВКЛ
+            </button>
+            <button
+              type="button"
+              id="toggle-handsfree-btn"
+              class="px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold border transition whitespace-nowrap"
+              title="Автоматически включать микрофон после ответа репетитора"
+            >
+              🎙 Авто
+            </button>
+            <button
+              type="button"
+              id="cycle-rate-btn"
+              class="px-2 py-1 rounded-lg text-[11px] sm:text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition whitespace-nowrap"
+              title="Скорость речи репетитора"
+            >
+              0.9x
+            </button>
+          </div>
+          <button
+            type="button"
+            id="reset-chat-btn"
+            class="px-2 py-1 rounded-lg text-[11px] sm:text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition whitespace-nowrap shrink-0"
+            title="Начать диалог заново"
+          >
+            ↻ Заново
+          </button>
+        </div>
+
+        <!-- Поле ввода сообщения -->
+        <form
+          id="chat-form"
+          class="shrink-0 p-2 sm:p-3 bg-slate-900 border-t border-slate-800 flex items-end gap-2"
+        >
+          <button
+            type="button"
+            id="mic-btn"
+            class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 border border-slate-700 flex items-center justify-center shrink-0 transition"
+            title="Голосовой ввод (en-US)"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" />
+            </svg>
+          </button>
+
+          <textarea
+            id="chat-input"
+            rows="1"
+            placeholder="Напиши ответ..."
+            class="flex-1 min-h-[40px] sm:min-h-[44px] max-h-28 px-3 py-2 sm:py-2.5 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white placeholder-slate-500 resize-none leading-snug"
+          ></textarea>
+
+          <button
+            type="submit"
+            id="send-btn"
+            disabled
+            class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-600 disabled:bg-slate-800 disabled:text-slate-500 hover:bg-indigo-500 text-white flex items-center justify-center shrink-0 transition"
+            title="Отправить"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== ВКЛАДКА 2: СЛОВАРЬ ==================== -->
+    <section id="tab-vocab" class="hidden h-full max-w-4xl mx-auto overflow-y-auto p-3 sm:p-5 space-y-4" style="padding-bottom: calc(5rem + var(--safe-bottom));">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-lg sm:text-xl font-bold text-white">Словарь новых слов</h2>
+          <p class="text-xs text-slate-400">Нажимай на карточку, чтобы перевернуть и проверить перевод</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" id="toggle-flashcards-btn" class="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition">
+            🃏 Режим карточек
+          </button>
+          <button type="button" id="vocab-add-btn" class="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition">
+            + Добавить слово
+          </button>
+        </div>
+      </div>
+
+      <!-- Режим тренажёра флешкарточек -->
+      <div id="flashcard-box" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between text-xs text-slate-400">
+          <span id="fc-counter">Карточка 1 из 1</span>
+          <div class="flex items-center gap-2">
+            <button type="button" id="fc-speak-btn" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-300 font-semibold">
+              🔊 Слово
+            </button>
+            <button type="button" id="fc-speak-ex-btn" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 font-semibold">
+              💬 Пример
+            </button>
+          </div>
+        </div>
+
+        <div id="fc-card" class="perspective-1000 cursor-pointer">
+          <div id="fc-card-inner" class="relative min-h-[170px] transition-transform duration-300 preserve-3d">
+            <div class="backface-hidden bg-slate-950 border border-slate-700/80 rounded-2xl p-6 flex flex-col items-center justify-center text-center min-h-[170px]">
+              <p id="fc-front-word" class="text-2xl font-bold text-white"></p>
+              <p id="fc-front-ipa" class="text-xs text-indigo-300 mt-1"></p>
+              <p class="text-[11px] text-slate-500 mt-3">Нажми, чтобы увидеть перевод</p>
+            </div>
+            <div class="backface-hidden rotate-y-180 absolute inset-0 bg-indigo-950/50 border border-indigo-500/40 rounded-2xl p-6 flex flex-col items-center justify-center text-center">
+              <p id="fc-back-tr" class="text-xl font-bold text-emerald-300"></p>
+              <p id="fc-back-ex" class="text-xs text-slate-300 mt-2 italic"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button type="button" id="fc-repeat-btn" class="py-2.5 rounded-xl text-xs font-semibold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition">
+            🔁 Повторить позже
+          </button>
+          <button type="button" id="fc-know-btn" class="py-2.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition">
+            ✓ Выучил
+          </button>
+        </div>
+      </div>
+
+      <!-- Список сохранённых слов -->
+      <div id="vocab-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </section>
+
+    <!-- ==================== ВКЛАДКА 3: ПРОГРЕСС И НАСТРОЙКИ ==================== -->
+    <section id="tab-progress" class="hidden h-full max-w-4xl mx-auto overflow-y-auto p-3 sm:p-5 space-y-4" style="padding-bottom: calc(5rem + var(--safe-bottom));">
+      <div>
+        <h2 class="text-lg sm:text-xl font-bold text-white">Прогресс и настройки</h2>
+        <p class="text-xs text-slate-400">Синхронизация между телефоном, планшетом и ПК</p>
+      </div>
+
+      <!-- Метрики -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4">
+          <p class="text-[11px] text-slate-400">Уровень CEFR</p>
+          <p id="stat-level" class="text-2xl font-extrabold text-indigo-400 mt-1">A2</p>
+          <p id="stat-level-sub" class="text-[11px] text-slate-500 mt-0.5">Предварительный</p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4">
+          <p class="text-[11px] text-slate-400">Пройдено уроков</p>
+          <p id="stat-lessons" class="text-2xl font-extrabold text-amber-400 mt-1">0/8</p>
+          <p id="stat-streak-sub" class="text-[11px] text-slate-500 mt-0.5">Серия: 1 дн. 🔥</p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4">
+          <p class="text-[11px] text-slate-400">Практика фраз</p>
+          <p id="stat-replies" class="text-2xl font-extrabold text-cyan-400 mt-1">0</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">В диалоге и уроках</p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3.5 sm:p-4">
+          <p class="text-[11px] text-slate-400">Слов в словаре</p>
+          <p id="stat-vocab" class="text-2xl font-extrabold text-emerald-400 mt-1">0/0</p>
+          <p id="stat-vocab-sub" class="text-[11px] text-slate-500 mt-0.5">Выучено / всего</p>
+        </div>
+      </div>
+
+      <!-- Облачная синхронизация через GitHub Gist -->
+      <div class="bg-slate-900 border border-indigo-500/30 rounded-2xl p-4 sm:p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="font-bold text-sm sm:text-base text-white">☁️ Облачная синхронизация (GitHub Gist)</h3>
+            <p class="text-xs text-slate-400">Единый прогресс на телефоне, планшете и ПК + раздельные профили для семьи</p>
+          </div>
+          <span id="gist-status-pill" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700">
+            Не подключено
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Профиль пользователя (для разделения прогресса)</label>
+            <div class="flex gap-1.5">
+              <input
+                type="text"
+                id="gist-profile-input"
+                list="family-profiles-list"
+                placeholder="Например: Папа или Ребёнок 1"
+                class="flex-1 px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+              />
+              <datalist id="family-profiles-list">
+                <option value="Папа"></option>
+                <option value="Мама"></option>
+                <option value="Ребёнок 1"></option>
+                <option value="Ребёнок 2"></option>
+              </datalist>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Gist ID (создаётся автоматически или вставьте общий)</label>
+            <input
+              type="text"
+              id="gist-id-input"
+              placeholder="Оставьте пустым для создания нового"
+              class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white font-mono"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">GitHub Personal Access Token (с правом <code>gist</code>)</label>
+          <div class="relative">
+            <input
+              type="password"
+              id="gist-token-input"
+              placeholder="ghp_... или github_pat_..."
+              class="w-full pr-11 pl-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+            />
+            <button
+              type="button"
+              id="toggle-gist-token-vis"
+              class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white px-1.5 py-1"
+              title="Показать/скрыть токен"
+            >
+              👁
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 pt-1">
+          <button
+            type="button"
+            id="gist-connect-btn"
+            class="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition"
+          >
+            ☁️ Подключить и синхронизировать
+          </button>
+          <button
+            type="button"
+            id="gist-pull-btn"
+            class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/40 transition"
+          >
+            ⬇ Загрузить из облака
+          </button>
+          <button
+            type="button"
+            id="gist-push-btn"
+            class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+          >
+            ⬆ Выгрузить в облако
+          </button>
+        </div>
+        <p id="gist-last-sync-label" class="text-[11px] text-slate-500">
+          Подсказка: на первом устройстве вставьте только токен и нажмите «Подключить». Затем скопируйте появившийся Gist ID на телефон и планшет.
+        </p>
+      </div>
+
+      <!-- Настройки голоса и озвучки -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="font-bold text-sm sm:text-base text-white">🎙 Голос и американский акцент (en-US)</h3>
+            <p class="text-xs text-slate-400">Выбери репетитора и движок синтеза речи</p>
+          </div>
+          <button
+            type="button"
+            id="test-voice-btn"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600/25 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/40 transition"
+          >
+            🔊 Проверить голос
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Репетитор и голос (US)</label>
+            <select
+              id="settings-voice-gender"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+            >
+              <option value="male">👨 Alex — Мужской (американский US)</option>
+              <option value="female">👩 Emma — Женский (американский US)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Движок озвучки</label>
+            <select
+              id="settings-tts-engine"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+            >
+              <option value="gemini">✨ Gemini 3.5 Neural Voice (живой + авто-фолбэк)</option>
+              <option value="browser">⚡ Браузерный синтезатор (en-US мгновенно)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Настройки Gemini 3 API -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="font-bold text-sm sm:text-base text-white">🔑 Настройки Gemini 3 API</h3>
+            <p class="text-xs text-slate-400">Ключ хранится только в `localStorage` этого браузера</p>
+          </div>
+          <span id="api-status-pill" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30">
+            Ключ не задан
+          </span>
+        </div>
+
+        <div class="space-y-2.5">
+          <div class="relative">
+            <input
+              type="password"
+              id="api-key-input"
+              placeholder="Вставь ключ AIza... из Google AI Studio"
+              class="w-full pr-11 pl-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+            />
+            <button
+              type="button"
+              id="toggle-key-visibility"
+              class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-white px-1.5 py-1"
+              title="Показать/скрыть ключ"
+            >
+              👁
+            </button>
+          </div>
+
+          <select
+            id="api-model-select"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+          >
+            <option value="gemini-3.5-flash">gemini-3.5-flash (рекомендуемая, точный разбор)</option>
+            <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (сверхбыстрая)</option>
+          </select>
+
+          <div class="flex flex-wrap items-center gap-2 pt-1">
+            <button
+              type="button"
+              id="save-api-btn"
+              class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition"
+            >
+              💾 Сохранить настройки
+            </button>
+            <button
+              type="button"
+              id="clear-api-btn"
+              class="px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition"
+            >
+              Очистить ключ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Резервное копирование файлом -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3">
+        <div>
+          <h3 class="font-bold text-sm sm:text-base text-white">📁 Резервная копия (JSON-файл)</h3>
+          <p class="text-xs text-slate-400">Ручной экспорт и импорт прогресса на случай работы без интернета</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" id="export-data-btn" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition">
+            ⬇ Экспорт (JSON)
+          </button>
+          <label class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition cursor-pointer">
+            ⬆ Импорт (JSON)
+            <input type="file" id="import-data-input" accept="application/json" class="hidden" />
+          </label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Нижняя навигация на мобильных и планшетах (< md) -->
+  <nav
+    class="md:hidden shrink-0 bg-slate-900/95 backdrop-blur border-t border-slate-800 grid grid-cols-4"
+    style="padding-bottom: var(--safe-bottom);"
+  >
+    <button type="button" data-tab="lessons" class="nav-tab py-2 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold text-slate-400">
+      <span class="text-base leading-none">🎓</span>
+      <span>Уроки</span>
+    </button>
+    <button type="button" data-tab="tutor" class="nav-tab py-2 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold text-indigo-400">
+      <span class="text-base leading-none">💬</span>
+      <span>Репетитор</span>
+    </button>
+    <button type="button" data-tab="vocab" class="nav-tab py-2 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold text-slate-400">
+      <span class="text-base leading-none">📚</span>
+      <span>Словарь (<span class="vocab-count-inline">0</span>)</span>
+    </button>
+    <button type="button" data-tab="progress" class="nav-tab py-2 flex flex-col items-center justify-center gap-0.5 text-[10px] font-semibold text-slate-400">
+      <span class="text-base leading-none">🏆</span>
+      <span>Прогресс</span>
+    </button>
+  </nav>
+
+  <!-- Модалка добавления слова с автопереводом через Gemini -->
+  <div id="add-word-modal" class="hidden fixed inset-0 z-50 bg-black/75 flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl p-4 sm:p-5 space-y-3.5">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-base text-white">Добавить слово или фразу</h3>
+        <button type="button" id="close-word-modal" class="text-slate-400 hover:text-white text-lg px-2">✕</button>
+      </div>
+
+      <div class="space-y-2.5">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Английское слово / фраза</label>
+          <div class="flex gap-2">
+            <input
+              type="text"
+              id="new-word-en"
+              placeholder="например, catch up with friends"
+              class="flex-1 px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+            />
+            <button
+              type="button"
+              id="ai-translate-word-btn"
+              class="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-600/25 hover:bg-indigo-600/40 text-indigo-300 border border-indigo-500/40 whitespace-nowrap"
+            >
+              ✨ Авто
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Перевод на русский</label>
+          <input
+            type="text"
+            id="new-word-ru"
+            placeholder="встретиться и поболтать с друзьями"
+            class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Пример фразы (опционально)</label>
+          <input
+            type="text"
+            id="new-word-ex"
+            placeholder="I usually catch up with friends on Sunday."
+            class="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 focus:border-indigo-500 focus:outline-none text-sm text-white"
+          />
+        </div>
+        <input type="hidden" id="new-word-ipa" value="" />
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button type="button" id="cancel-word-modal" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300">
+          Отмена
+        </button>
+        <button type="button" id="save-word-btn" class="px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white">
+          Сохранить в словарь
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Тост-уведомление -->
+  <div id="toast" class="hidden fixed top-14 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-xl bg-slate-800 border border-slate-600 text-xs font-semibold text-white shadow-xl"></div>
+
+  <script>
+    // ==================== PWA MANIFEST (ДЛЯ УСТАНОВКИ НА ТЕЛЕФОН) ====================
+    (function setupPWAManifest() {
+      try {
+        const svgIcon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><rect width="512" height="512" rx="112" fill="#0f172a"/><circle cx="256" cy="256" r="180" fill="#4f46e5" opacity="0.22"/><path d="M256 128a56 56 0 0 1 56 56v72a56 56 0 0 1-112 0v-72a56 56 0 0 1 56-56zm-96 128a96 96 0 0 0 192 0h24a120 120 0 0 1-108 119.4V416h44v24H200v-24h44v-40.6A120 120 0 0 1 136 256h24z" fill="#818cf8"/></svg>`;
+        const iconUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgIcon);
+        const manifest = {
+          name: 'Alex & Emma AI — Английский',
+          short_name: 'Alex AI',
+          start_url: location.href,
+          display: 'standalone',
+          background_color: '#090d16',
+          theme_color: '#090d16',
+          icons: [{ src: iconUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }]
+        };
+        const link = document.getElementById('pwa-manifest-link');
+        if (link) {
+          link.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], { type: 'application/json' }));
+        }
+      } catch {}
+    })();
+
+    // ==================== БАЗА УРОКОВ ПО ФОРМУЛАМ (ENGLISH GALAXY STYLE) ====================
+    const COURSE_LESSONS = [
+      {
+        id: 'L1',
+        level: 'A0',
+        title: 'Урок 1. Глагол to be (am / is / are)',
+        subtitle: 'Когда в русском предложении нет глагола действия',
+        formula: 'I <b>am</b> · He / She / It <b>is</b> · You / We / They <b>are</b> + кто / какой / где',
+        examples: [
+          { en: 'I am ready for the trip.', ru: 'Я готов к поездке.' },
+          { en: 'She is very busy today.', ru: 'Она сегодня очень занята.' },
+          { en: 'We are at the airport now.', ru: 'Мы сейчас в аэропорту.' }
+        ],
+        drills: [
+          { ru: 'Я из России.', en: 'I am from Russia.', hint: 'Используй I am + from...', note: 'После I всегда ставится форма am.' },
+          { ru: 'Он очень хороший друг.', en: 'He is a very good friend.', hint: 'Не забудь артикль a перед good friend', note: 'С he/she/it используется is, а перед исчисляемым существительным в ед. числе нужен артикль a.' },
+          { ru: 'Они сейчас дома.', en: 'They are at home now.', hint: 'дома = at home', note: 'С местоимением they используется форма are.' },
+          { ru: 'Этот фильм действительно интересный.', en: 'This movie is really interesting.', hint: 'фильм = movie', note: 'This movie = it, поэтому ставим is.' },
+          { ru: 'Мы готовы начать.', en: 'We are ready to start.', hint: 'готов = ready', note: 'We + are + прилагательное ready + to start.' },
+          { ru: 'Она не устала.', en: 'She is not tired.', hint: 'уставший = tired', note: 'Отрицание с to be строится добавлением not после is.' }
+        ]
+      },
+      {
+        id: 'L2',
+        level: 'A0',
+        title: 'Урок 2. Present Simple (I / you / we / they)',
+        subtitle: 'Регулярные действия, привычки и факты',
+        formula: '<b>I / You / We / They + V1</b> (начальная форма глагола без частицы to)',
+        examples: [
+          { en: 'I work every day.', ru: 'Я работаю каждый день.' },
+          { en: 'We live in a big city.', ru: 'Мы живём в большом городе.' },
+          { en: 'They speak English very well.', ru: 'Они говорят по-английски очень хорошо.' }
+        ],
+        drills: [
+          { ru: 'Я пью кофе каждое утро.', en: 'I drink coffee every morning.', hint: 'каждое утро = every morning', note: 'Для регулярных действий используется Present Simple: I + V1.' },
+          { ru: 'Мы часто путешествуем вместе.', en: 'We often travel together.', hint: 'often ставится перед основным глаголом', note: 'Наречия частоты (often, usually, always) ставятся перед глаголом.' },
+          { ru: 'Я понимаю тебя очень хорошо.', en: 'I understand you very well.', hint: 'понимать = understand', note: 'В конце фразы наречие образа действия: very well.' },
+          { ru: 'Они живут рядом с парком.', en: 'They live near the park.', hint: 'рядом с = near', note: 'They + V1 (live) без каких-либо окончаний.' },
+          { ru: 'Ты говоришь по-английски свободно.', en: 'You speak English fluently.', hint: 'свободно (о языке) = fluently', note: 'Названия языков (English) всегда пишутся с заглавной буквы.' },
+          { ru: 'Мне нравится эта идея.', en: 'I like this idea.', hint: 'нравиться = like', note: 'В английском дословно: «Я люблю эту идею» — I like this idea.' }
+        ]
+      },
+      {
+        id: 'L3',
+        level: 'A1',
+        title: 'Урок 3. Present Simple (he / she / it + s)',
+        subtitle: 'Главное правило 3-го лица единственного числа',
+        formula: '<b>He / She / It + V1 + s (es)</b> · have → <b>has</b> · go → <b>goes</b>',
+        examples: [
+          { en: 'He works in an IT company.', ru: 'Он работает в IT-компании.' },
+          { en: 'She has a lot of experience.', ru: 'У неё много опыта.' },
+          { en: 'It helps me every day.', ru: 'Это помогает мне каждый день.' }
+        ],
+        drills: [
+          { ru: 'Она работает в офисе.', en: 'She works in an office.', hint: 'Не забудь -s у глагола work', note: 'После she к глаголу добавляется окончание -s: works.' },
+          { ru: 'Он часто смотрит фильмы на английском.', en: 'He often watches movies in English.', hint: 'watch → watches', note: 'После шипящих (-ch, -sh, -s, -x) добавляется окончание -es.' },
+          { ru: 'У неё есть новая машина.', en: 'She has a new car.', hint: 'have меняем на has', note: 'Глагол have для he/she/it имеет особую форму has.' },
+          { ru: 'Мой друг живёт в Нью-Йорке.', en: 'My friend lives in New York.', hint: 'My friend = he/she', note: 'My friend (он/она) требует окончания -s: lives.' },
+          { ru: 'Это стоит двадцать долларов.', en: 'It costs twenty dollars.', hint: 'стоить = cost', note: 'It + costs (глагол с окончанием -s).' },
+          { ru: 'Он ходит в спортзал дважды в неделю.', en: 'He goes to the gym twice a week.', hint: 'спортзал = the gym, дважды = twice', note: 'Глагол go в 3-м лице пишется как goes.' }
+        ]
+      },
+      {
+        id: 'L4',
+        level: 'A1',
+        title: 'Урок 4. Вопросы и отрицания (do / does)',
+        subtitle: 'Вспомогательные глаголы в Present Simple',
+        formula: 'Вопрос: <b>Do / Does</b> + подлежащее + <b>V1</b>? · Отрицание: <b>don’t / doesn’t + V1</b>',
+        examples: [
+          { en: 'Do you have free time tonight?', ru: 'У тебя есть свободное время сегодня вечером?' },
+          { en: 'Does she live near here?', ru: 'Она живёт неподалёку?' },
+          { en: 'He does not know the answer.', ru: 'Он не знает ответа.' }
+        ],
+        drills: [
+          { ru: 'Ты любишь американские фильмы?', en: 'Do you like American movies?', hint: 'Вопрос с you начинается с Do', note: 'Do ставится на первое место перед подлежащим you.' },
+          { ru: 'Где ты работаешь?', en: 'Where do you work?', hint: 'Вопросительное слово Where ставится перед do', note: 'Схема: Вопросительное слово + do/does + подлежащее + V1.' },
+          { ru: 'Она не понимает это слово.', en: 'She does not understand this word.', hint: 'После does глагол без окончания -s!', note: 'Вспомогательный глагол does забирает -s на себя, поэтому understand остаётся в начальной форме.' },
+          { ru: 'Он говорит по-испански?', en: 'Does he speak Spanish?', hint: 'Вопрос про he начинается с Does', note: 'Does + he + speak (без -s).' },
+          { ru: 'Я не хочу идти туда сегодня.', en: 'I do not want to go there today.', hint: 'хотеть сделать = want to + V1', note: 'После глагола want перед вторым глаголом ставится частица to.' },
+          { ru: 'Почему это происходит?', en: 'Why does it happen?', hint: 'происходить = happen', note: 'Why + does + it + happen.' }
+        ]
+      },
+      {
+        id: 'L5',
+        level: 'A1',
+        title: 'Урок 5. Конструкции want to / need to / have to',
+        subtitle: 'Как связывать два глагола в английском предложении',
+        formula: 'Подлежащее + <b>want to / need to / have to + V1</b>',
+        examples: [
+          { en: 'I want to improve my English.', ru: 'Я хочу улучшить свой английский.' },
+          { en: 'We need to book a hotel.', ru: 'Нам нужно забронировать отель.' },
+          { en: 'She has to wake up early.', ru: 'Ей приходится просыпаться рано.' }
+        ],
+        drills: [
+          { ru: 'Я хочу заказать чашку кофе.', en: 'I want to order a cup of coffee.', hint: 'заказать = order', note: 'Между want и order обязательно ставится частица to.' },
+          { ru: 'Нам нужно купить билеты заранее.', en: 'We need to buy tickets in advance.', hint: 'заранее = in advance', note: 'need to + V1 выражает необходимость.' },
+          { ru: 'Ему нужно позвонить врачу.', en: 'He needs to call a doctor.', hint: 'He + needs to', note: 'Для he/she/it не забываем -s: needs to / wants to / has to.' },
+          { ru: 'Мне приходится работать в субботу.', en: 'I have to work on Saturday.', hint: 'приходится / должен = have to', note: 'С днями недели всегда используется предлог on (on Saturday).' },
+          { ru: 'Ты хочешь пойти с нами?', en: 'Do you want to go with us?', hint: 'с нами = with us', note: 'Вопрос строится через Do you want to...' },
+          { ru: 'Она хочет стать дизайнером.', en: 'She wants to become a designer.', hint: 'стать = become + артикль a', note: 'Перед названием профессии в единственном числе нужен артикль a.' }
+        ]
+      },
+      {
+        id: 'L6',
+        level: 'A2',
+        title: 'Урок 6. Past Simple (Прошедшее время)',
+        subtitle: 'События в прошлом: вчера, на прошлой неделе, в 2020 году',
+        formula: 'Утв.: <b>V2 (или V+ed)</b> · Вопрос: <b>Did + S + V1?</b> · Отр.: <b>didn’t + V1</b>',
+        examples: [
+          { en: 'I visited my parents yesterday.', ru: 'Я навестил родителей вчера.' },
+          { en: 'We went to the beach last weekend.', ru: 'Мы ездили на пляж в прошлые выходные.' },
+          { en: 'Did you enjoy the concert?', ru: 'Тебе понравился концерт?' }
+        ],
+        drills: [
+          { ru: 'Я закончил работу час назад.', en: 'I finished work an hour ago.', hint: 'час назад = an hour ago', note: 'Правильный глагол finish получает окончание -ed: finished.' },
+          { ru: 'Мы купили эту квартиру два года назад.', en: 'We bought this apartment two years ago.', hint: 'buy → bought (2-я форма)', note: 'Неправильный глагол buy в прошедшем времени — bought.' },
+          { ru: 'Ты видел это сообщение?', en: 'Did you see this message?', hint: 'После Did ставим 1-ю форму see', note: 'В вопросе Past Simple используется Did + начальная форма глагола (see).' },
+          { ru: 'Она не пришла на встречу вчера.', en: 'She did not come to the meeting yesterday.', hint: 'приходить = come', note: 'В отрицании did not + 1-я форма come.' },
+          { ru: 'Где ты провёл отпуск?', en: 'Where did you spend your vacation?', hint: 'проводить время = spend, отпуск (US) = vacation', note: 'Where + did + you + spend.' },
+          { ru: 'Вчера погода была отличная.', en: 'The weather was great yesterday.', hint: 'was — прошедшая форма is', note: 'С глаголом to be (was/were) вспомогательный did не нужен.' }
+        ]
+      },
+      {
+        id: 'L7',
+        level: 'A2',
+        title: 'Урок 7. Будущее время: will и going to',
+        subtitle: 'Спонтанные решения (will) и твёрдые планы (going to)',
+        formula: 'План: <b>am/is/are going to + V1</b> · Решение/прогноз: <b>will + V1</b>',
+        examples: [
+          { en: 'I am going to learn English every day.', ru: 'Я собираюсь учить английский каждый день.' },
+          { en: 'I will help you with this task.', ru: 'Я помогу тебе с этой задачей.' },
+          { en: 'Are you going to travel this summer?', ru: 'Ты собираешься путешествовать этим летом?' }
+        ],
+        drills: [
+          { ru: 'Я собираюсь посмотреть этот фильм вечером.', en: 'I am going to watch this movie tonight.', hint: 'сегодня вечером = tonight', note: 'Заранее обдуманный план передаётся через am/is/are going to.' },
+          { ru: 'Я позвоню тебе завтра.', en: 'I will call you tomorrow.', hint: 'Обещание / решение = will', note: 'Для обещаний и быстрых решений используем will + V1.' },
+          { ru: 'Она собирается сменить работу.', en: 'She is going to change her job.', hint: 'сменить работу = change her job', note: 'She + is going to + V1.' },
+          { ru: 'Думаю, завтра будет солнечно.', en: 'I think it will be sunny tomorrow.', hint: 'будет = will be', note: 'После I think для прогнозов используем will + be.' },
+          { ru: 'Мы не собираемся оставаться здесь.', en: 'We are not going to stay here.', hint: 'оставаться = stay', note: 'We are not going to + stay.' },
+          { ru: 'Когда ты вернёшься?', en: 'When will you come back?', hint: 'вернуться = come back', note: 'When + will + you + come back.' }
+        ]
+      },
+      {
+        id: 'L8',
+        level: 'B1',
+        title: 'Урок 8. Present Perfect (Результат и опыт)',
+        subtitle: 'Действие совершилось к настоящему моменту (без точного времени в прошлом)',
+        formula: '<b>have / has + V3 (или V+ed)</b> · already / yet / ever / never / just',
+        examples: [
+          { en: 'I have already finished my report.', ru: 'Я уже закончил свой отчёт.' },
+          { en: 'Have you ever been to California?', ru: 'Ты когда-нибудь бывал в Калифорнии?' },
+          { en: 'She has just arrived at the hotel.', ru: 'Она только что приехала в отель.' }
+        ],
+        drills: [
+          { ru: 'Я уже посмотрел этот сериал.', en: 'I have already watched this series.', hint: 'already ставится между have и V3', note: 'Результат к текущему моменту без указания «когда» → Present Perfect.' },
+          { ru: 'Ты когда-нибудь пробовал суши?', en: 'Have you ever tried sushi?', hint: 'когда-нибудь = ever', note: 'Вопросы о жизненном опыте строятся через Have you ever + V3.' },
+          { ru: 'Он ещё не ответил на моё письмо.', en: 'He has not answered my email yet.', hint: 'ещё (в отрицании) = yet в конце фразы', note: 'С he/she/it используется has + not + V3, а yet ставится в конец.' },
+          { ru: 'Мы только что приехали в аэропорт.', en: 'We have just arrived at the airport.', hint: 'только что = just', note: 'just ставится сразу после have/has.' },
+          { ru: 'Я никогда не был в Нью-Йорке.', en: 'I have never been to New York.', hint: 'был где-то (опыт) = have been to', note: 'После have never been используется предлог направления to.' },
+          { ru: 'Они уже приняли решение.', en: 'They have already made a decision.', hint: 'принять решение = make a decision (made)', note: '3-я форма глагола make — made.' }
+        ]
+      }
+    ];
+
+    // ==================== КОНСТАНТЫ, ПЕРСОНЫ И ТЕМЫ ====================
+    const STORAGE_KEY = 'alex_ai_tutor_state_v4';
+    const RATES = [0.9, 1.0, 0.75];
+    const VALID_MODELS = ['gemini-3.5-flash', 'gemini-3.5-flash-lite'];
+
+    const PERSONAS = {
+      male: {
+        name: 'Alex',
+        badge: '🇺🇸 US Male',
+        geminiVoice: 'Puck',
+        browserPatterns: /david|mark|guy|alex|daniel|aaron|christopher|eric|matthew|stephen|male|google us english/i,
+        avoidPatterns: /female|samantha|victoria|karen|zira|aria|jenny|sara|emma|amy|allison|ava|susan/i
+      },
+      female: {
+        name: 'Emma',
+        badge: '🇺🇸 US Female',
+        geminiVoice: 'Aoede',
+        browserPatterns: /samantha|aria|jenny|ava|allison|victoria|zira|susan|sara|emma|female|google us english/i,
+        avoidPatterns: /male|david|mark|guy|daniel|aaron|christopher|eric|matthew|stephen/i
+      }
+    };
+
+    const SUBTOPICS = {
+      scenarios: [
+        {
+          id: 'coffee',
+          label: '☕ Кофейня',
+          promptContext: 'Roleplay at an American coffee shop. You are the barista, user is ordering a drink and snack.',
+          openingEn: "We're at a cozy coffee shop in Seattle. I'm the barista. Hey there! What can I get started for you today?",
+          openingRu: "Мы в уютной кофейне в Сиэтле, я бариста. Привет! Что я могу приготовить для тебя сегодня?",
+          words: [
+            { en: 'What can I get you?', ipa: '/wɒt kæn aɪ ɡet juː/', ru: 'Что вам приготовить / предложить?', ex: 'What can I get you today?' },
+            { en: 'to go', ipa: '/tə ɡəʊ/', ru: 'с собой (о еде/напитке)', ex: 'An iced latte to go, please.' }
+          ]
+        },
+        {
+          id: 'airport',
+          label: '✈️ Аэропорт',
+          promptContext: 'Roleplay at US airport check-in and customs. You are the airline agent / border officer.',
+          openingEn: "Welcome to JFK Airport check-in! Could I see your passport and ask where you're flying today?",
+          openingRu: "Добро пожаловать на стойку регистрации аэропорта JFK! Покажите ваш паспорт — куда вы сегодня летите?",
+          words: [
+            { en: 'boarding pass', ipa: '/ˈbɔːr.dɪŋ pæs/', ru: 'посадочный талон', ex: 'Here is your boarding pass for gate B12.' },
+            { en: 'carry-on bag', ipa: '/ˈkær.i ɑːn bæɡ/', ru: 'ручная кладь', ex: 'I only have one carry-on bag.' }
+          ]
+        },
+        {
+          id: 'hotel',
+          label: '🏨 Отель',
+          promptContext: 'Roleplay at a hotel front desk in New York. You are the receptionist helping the guest check in.',
+          openingEn: "Good afternoon and welcome to the Midtown Hotel! Do you have a reservation under your name?",
+          openingRu: "Добрый день и добро пожаловать в отель Midtown! У вас есть бронь на ваше имя?",
+          words: [
+            { en: 'reservation', ipa: '/ˌrez.ərˈveɪ.ʃən/', ru: 'бронирование', ex: 'I have a reservation for three nights.' },
+            { en: 'check in', ipa: '/tʃek ɪn/', ru: 'заселиться в отель', ex: 'What time can we check in?' }
+          ]
+        },
+        {
+          id: 'interview',
+          label: '💼 Собеседование',
+          promptContext: 'Roleplay a friendly job interview for an international company. You are the hiring manager.',
+          openingEn: "Thanks for joining the call today! To kick things off, tell me a little bit about yourself and what you do.",
+          openingRu: "Спасибо, что подключились! Для начала расскажите немного о себе и о том, чем вы занимаетесь.",
+          words: [
+            { en: 'to kick things off', ipa: '/tə kɪk θɪŋz ɒf/', ru: 'для начала / чтобы начать', ex: "Let's kick things off with a quick intro." },
+            { en: 'strong background in', ipa: '/strɒŋ ˈbæk.ɡraʊnd ɪn/', ru: 'хороший опыт в чём-либо', ex: 'I have a strong background in analytics.' }
+          ]
+        },
+        {
+          id: 'doctor',
+          label: '🩺 У врача',
+          promptContext: 'Roleplay at an urgent care clinic in the US. You are a caring doctor asking about symptoms.',
+          openingEn: "Hi, come on in and have a seat. What seems to be bothering you today?",
+          openingRu: "Здравствуйте, проходите и присаживайтесь. Что вас сегодня беспокоит?",
+          words: [
+            { en: 'sore throat', ipa: '/sɔːr θroʊt/', ru: 'боль в горле', ex: 'I have had a sore throat since yesterday.' },
+            { en: 'prescription', ipa: '/prɪˈskrɪp.ʃən/', ru: 'рецепт на лекарство', ex: 'The doctor gave me a prescription.' }
+          ]
+        },
+        {
+          id: 'smalltalk',
+          label: '🥂 Смол-ток',
+          promptContext: 'Casual American small talk with a new acquaintance at a meetup or neighborhood event.',
+          openingEn: "Hey! Great turnout tonight, isn't it? How do you know the host, or is this your first time here?",
+          openingRu: "Привет! Отлично сегодня народу собралось, правда? Откуда ты знаешь организатора, или ты здесь впервые?",
+          words: [
+            { en: 'great turnout', ipa: '/ɡreɪt ˈtɜːrn.aʊt/', ru: 'много народу / высокая явка', ex: 'There was a great turnout at the event.' },
+            { en: 'for a living', ipa: '/fɔːr ə ˈlɪv.ɪŋ/', ru: 'на жизнь (о профессии)', ex: 'What do you do for a living?' }
+          ]
+        }
+      ],
+      grammar: [
+        {
+          id: 'past_present',
+          label: '🕒 Past vs Present',
+          promptContext: 'Grammar drill focusing on Past Simple vs Present Simple in natural conversation.',
+          openingEn: "Let's practice Past Simple vs Present Simple. Tell me one thing you did yesterday and one thing you do every morning.",
+          openingRu: "Потренируем Past Simple и Present Simple. Расскажи об одном деле, которое сделал вчера, и об одном — которое делаешь каждое утро.",
+          words: [
+            { en: 'yesterday', ipa: '/ˈjes.tər.deɪ/', ru: 'вчера', ex: 'I finished my project yesterday.' },
+            { en: 'every morning', ipa: '/ˈev.ri ˈmɔːr.nɪŋ/', ru: 'каждое утро', ex: 'I go for a run every morning.' }
+          ]
+        },
+        {
+          id: 'present_perfect',
+          label: '✨ Present Perfect',
+          promptContext: 'Grammar drill focusing on Present Perfect (have/has + V3) for life experience and recent results.',
+          openingEn: "Let's practice Present Perfect! Have you ever visited another country, or tried a really unusual food?",
+          openingRu: "Потренируем Present Perfect! Ты когда-нибудь бывал в другой стране или пробовал очень необычную еду?",
+          words: [
+            { en: 'Have you ever...?', ipa: '/hæv juː ˈev.ər/', ru: 'Ты когда-нибудь...?', ex: 'Have you ever been to California?' },
+            { en: 'recently', ipa: '/ˈriː.sənt.li/', ru: 'недавно', ex: 'I have recently started learning English.' }
+          ]
+        },
+        {
+          id: 'articles',
+          label: '🔤 Артикли a/an/the',
+          promptContext: 'Grammar drill focusing on English articles (a, an, the, zero article) with everyday nouns.',
+          openingEn: "Let's master articles (a, an, the). Describe your room or workspace in two sentences — pay attention to specific vs general things!",
+          openingRu: "Отработаем артикли (a, an, the). Опиши свою комнату или рабочее место в двух предложениях — следи за конкретными и общими предметами!",
+          words: [
+            { en: 'on the desk', ipa: '/ɑːn ðə desk/', ru: 'на (этом) столе', ex: 'There is a laptop on the desk.' },
+            { en: 'in general', ipa: '/ɪn ˈdʒen.ər.əl/', ru: 'в целом / вообще', ex: 'In general, I prefer tea.' }
+          ]
+        },
+        {
+          id: 'conditionals',
+          label: '🔀 Conditionals (If)',
+          promptContext: 'Grammar drill focusing on First and Second Conditionals (If + Present/Past, will/would).',
+          openingEn: "Let's practice Conditionals! If you had a free plane ticket to anywhere in the US tomorrow, where would you go?",
+          openingRu: "Потренируем условные предложения! Если бы у тебя завтра был бесплатный билет в любую точку США, куда бы ты полетел?",
+          words: [
+            { en: 'If I had..., I would...', ipa: '/ɪf aɪ hæd aɪ wʊd/', ru: 'Если бы у меня было..., я бы...', ex: 'If I had more time, I would travel more.' },
+            { en: 'anywhere', ipa: '/ˈen.i.wer/', ru: 'куда угодно / где угодно', ex: 'You can sit anywhere you like.' }
+          ]
+        },
+        {
+          id: 'phrasal',
+          label: '🚀 Фразовые глаголы',
+          promptContext: 'Grammar & vocab drill focusing on common American phrasal verbs (figure out, look forward to, end up, catch up).',
+          openingEn: "Let's practice American phrasal verbs! What is something you are really looking forward to this month?",
+          openingRu: "Потренируем американские фразовые глаголы! Чего ты с нетерпением ждёшь в этом месяце?",
+          words: [
+            { en: 'look forward to', ipa: '/lʊk ˈfɔːr.wərd tuː/', ru: 'с нетерпением ждать', ex: "I'm looking forward to the weekend." },
+            { en: 'figure out', ipa: '/ˈfɪɡ.jər aʊt/', ru: 'разобраться / понять', ex: "We'll figure it out together." }
+          ]
+        }
+      ]
+    };
+
+    function deepCopy(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function getLocalDateStr(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    const DEFAULT_STATE = {
+      level: 'A2',
+      levelConfirmed: false,
+      streak: 1,
+      lastActiveDate: getLocalDateStr(0),
+      repliesCount: 0,
+      completedLessons: [],
+      mode: 'placement',
+      subtopic: {
+        scenarios: 'coffee',
+        grammar: 'past_present'
+      },
+      placementStep: 1,
+      voiceGender: 'male',
+      ttsEngine: 'gemini',
+      autoSpeak: true,
+      handsFree: false,
+      rateIndex: 0,
+      apiKey: '',
+      model: 'gemini-3.5-flash',
+      gistToken: '',
+      gistId: '',
+      gistProfile: 'Папа',
+      lastSyncedAt: null,
+      updatedAt: Date.now(),
+      vocab: [
+        { id: 'w1', en: 'on weekends', ipa: '/ɑːn ˈwiːk.endz/', ru: 'по выходным', ex: 'What do you usually do on weekends?', learned: false },
+        { id: 'w2', en: 'in my free time', ipa: '/ɪn maɪ friː taɪm/', ru: 'в свободное время', ex: 'I like fishing in my free time.', learned: true }
+      ],
+      history: []
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('alex_ai_tutor_state_v3') || localStorage.getItem('alex_ai_tutor_state_v2');
+        if (!raw) return deepCopy(DEFAULT_STATE);
+        const parsed = JSON.parse(raw);
+        const merged = {
+          ...deepCopy(DEFAULT_STATE),
+          ...parsed,
+          subtopic: {
+            ...DEFAULT_STATE.subtopic,
+            ...(parsed.subtopic || {})
+          },
+          completedLessons: Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [],
+          vocab: Array.isArray(parsed.vocab) && parsed.vocab.length ? parsed.vocab : deepCopy(DEFAULT_STATE.vocab),
+          history: Array.isArray(parsed.history) ? parsed.history : []
+        };
+
+        if (!VALID_MODELS.includes(merged.model)) {
+          merged.model = DEFAULT_STATE.model;
+        }
+        if (!PERSONAS[merged.voiceGender]) {
+          merged.voiceGender = 'male';
+        }
+
+        const today = getLocalDateStr(0);
+        const yesterday = getLocalDateStr(-1);
+        if (merged.lastActiveDate !== today) {
+          if (merged.lastActiveDate === yesterday) {
+            merged.streak = (Number(merged.streak) || 1) + 1;
+          } else {
+            merged.streak = 1;
+          }
+          merged.lastActiveDate = today;
+        }
+
+        return merged;
+      } catch {
+        return deepCopy(DEFAULT_STATE);
+      }
+    }
+
+    let state = loadState();
+    let isSending = false;
+    let isSpeakingNow = false;
+    let isListeningNow = false;
+    let speechRec = null;
+    let activeMicTarget = 'chat';
+    let syncDebounceTimer = null;
+    let isSyncingNow = false;
+
+    function saveState(triggerCloudSync = true) {
+      state.updatedAt = Date.now();
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.warn('Ошибка сохранения в localStorage:', e);
+      }
+      if (triggerCloudSync && state.gistToken && state.gistId) {
+        clearTimeout(syncDebounceTimer);
+        syncDebounceTimer = setTimeout(() => {
+          pushToGist(true);
+        }, 2000);
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.add('hidden'), 2600);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ==================== ОБЛАЧНАЯ СИНХРОНИЗАЦИЯ ЧЕРЕЗ GITHUB GIST ====================
+    function getProfileFileName(profileName) {
+      const clean = String(profileName || 'default').trim() || 'default';
+      // Кодируем кириллицу/пробелы в безопасное имя файла Gist
+      const safe = encodeURIComponent(clean).replace(/%/g, '_');
+      return `alex_ai_profile_${safe}.json`;
+    }
+
+    function buildSyncPayload() {
+      return {
+        profileName: state.gistProfile || 'Папа',
+        level: state.level,
+        levelConfirmed: state.levelConfirmed,
+        streak: state.streak,
+        lastActiveDate: state.lastActiveDate,
+        repliesCount: state.repliesCount,
+        completedLessons: state.completedLessons,
+        voiceGender: state.voiceGender,
+        ttsEngine: state.ttsEngine,
+        vocab: state.vocab,
+        updatedAt: state.updatedAt || Date.now()
+      };
+    }
+
+    function applyCloudPayload(remote) {
+      if (!remote || typeof remote !== 'object') return;
+      if (typeof remote.level === 'string') state.level = remote.level;
+      if (typeof remote.levelConfirmed === 'boolean') state.levelConfirmed = remote.levelConfirmed;
+      if (typeof remote.streak === 'number') state.streak = Math.max(state.streak || 1, remote.streak);
+      if (typeof remote.lastActiveDate === 'string') state.lastActiveDate = remote.lastActiveDate;
+      if (typeof remote.repliesCount === 'number') state.repliesCount = remote.repliesCount;
+      if (Array.isArray(remote.completedLessons)) state.completedLessons = remote.completedLessons;
+      if (PERSONAS[remote.voiceGender]) state.voiceGender = remote.voiceGender;
+      if (remote.ttsEngine === 'gemini' || remote.ttsEngine === 'browser') state.ttsEngine = remote.ttsEngine;
+      if (Array.isArray(remote.vocab) && remote.vocab.length) {
+        state.vocab = remote.vocab;
+      }
+      state.lastSyncedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      saveState(false);
+
+      syncPersonaUI();
+      updateVocabCounters();
+      updateModeInfoUI();
+      if (!document.getElementById('tab-lessons').classList.contains('hidden')) renderLessonsMap();
+      if (!document.getElementById('tab-vocab').classList.contains('hidden')) renderVocab();
+      if (!document.getElementById('tab-progress').classList.contains('hidden')) renderProgress();
+    }
+
+    function syncGistUI(statusOverride = null) {
+      const iconEl = document.getElementById('header-sync-icon');
+      const labelEl = document.getElementById('header-profile-label');
+      const pillEl = document.getElementById('gist-status-pill');
+      const lastSyncEl = document.getElementById('gist-last-sync-label');
+
+      const connected = Boolean((state.gistToken || '').trim() && (state.gistId || '').trim());
+      if (labelEl) {
+        labelEl.textContent = connected ? (state.gistProfile || 'Облако') : 'Локально';
+      }
+
+      if (statusOverride === 'syncing') {
+        if (iconEl) iconEl.textContent = '🔄';
+        if (pillEl) {
+          pillEl.textContent = 'Синхронизация...';
+          pillEl.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30';
+        }
+        return;
+      }
+
+      if (statusOverride === 'error') {
+        if (iconEl) iconEl.textContent = '⚠️';
+        if (pillEl) {
+          pillEl.textContent = 'Ошибка синхронизации';
+          pillEl.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        }
+        return;
+      }
+
+      if (connected) {
+        if (iconEl) iconEl.textContent = '☁️';
+        if (pillEl) {
+          pillEl.textContent = `Подключено (${state.gistProfile || 'Папа'})`;
+          pillEl.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
+        }
+        if (lastSyncEl && state.lastSyncedAt) {
+          lastSyncEl.textContent = `Последняя синхронизация: сегодня в ${state.lastSyncedAt}. Профиль: «${state.gistProfile}».`;
+        }
+      } else {
+        if (iconEl) iconEl.textContent = '☁️';
+        if (pillEl) {
+          pillEl.textContent = 'Не подключено';
+          pillEl.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700';
+        }
+      }
+    }
+
+    async function createNewGist() {
+      const token = (state.gistToken || '').trim();
+      if (!token) throw new Error('Вставь GitHub Token');
+
+      const fileName = getProfileFileName(state.gistProfile);
+      const res = await fetch('https://api.github.com/gists', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/vnd.github+json',
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          description: 'Alex & Emma AI — Семейный прогресс изучения английского',
+          public: false,
+          files: {
+            [fileName]: {
+              content: JSON.stringify(buildSyncPayload(), null, 2)
+            }
+          }
+        })
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || `Ошибка GitHub API (${res.status})`);
+      }
+
+      const data = await res.json();
+      state.gistId = data.id;
+      state.lastSyncedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      saveState(false);
+      return data.id;
+    }
+
+    async function pullFromGist(silent = false) {
+      const token = (state.gistToken || '').trim();
+      const gistId = (state.gistId || '').trim();
+      if (!token || !gistId || isSyncingNow) return false;
+
+      isSyncingNow = true;
+      syncGistUI('syncing');
+      try {
+        const res = await fetch(`https://api.github.com/gists/${encodeURIComponent(gistId)}`, {
+          headers: {
+            'Accept': 'application/vnd.github+json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!res.ok) {
+          throw new Error(`Ошибка чтения Gist (${res.status})`);
+        }
+
+        const data = await res.json();
+        const fileName = getProfileFileName(state.gistProfile);
+        const fileObj = data.files?.[fileName];
+
+        if (fileObj && fileObj.content) {
+          const parsed = JSON.parse(fileObj.content);
+          applyCloudPayload(parsed);
+          syncGistUI('ok');
+          if (!silent) showToast(`Загружен профиль «${state.gistProfile}»`);
+          return true;
+        } else {
+          // Файла для этого профиля ещё нет в Gist — создаём его из текущих данных
+          isSyncingNow = false;
+          await pushToGist(silent);
+          return true;
+        }
+      } catch (err) {
+        syncGistUI('error');
+        if (!silent) showToast(err.message || 'Ошибка синхронизации');
+        return false;
+      } finally {
+        isSyncingNow = false;
+      }
+    }
+
+    async function pushToGist(silent = false) {
+      const token = (state.gistToken || '').trim();
+      const gistId = (state.gistId || '').trim();
+      if (!token || !gistId || isSyncingNow) return false;
+
+      isSyncingNow = true;
+      syncGistUI('syncing');
+      try {
+        const fileName = getProfileFileName(state.gistProfile);
+        const res = await fetch(`https://api.github.com/gists/${encodeURIComponent(gistId)}`, {
+          method: 'PATCH',
+          headers: {
+            'Accept': 'application/vnd.github+json',
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            files: {
+              [fileName]: {
+                content: JSON.stringify(buildSyncPayload(), null, 2)
+              }
+            }
+          })
+        });
+
+        if (!res.ok) {
+          throw new Error(`Ошибка записи Gist (${res.status})`);
+        }
+
+        state.lastSyncedAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        saveState(false);
+        syncGistUI('ok');
+        if (!silent) showToast(`Сохранено в облако (${state.gistProfile})`);
+        return true;
+      } catch (err) {
+        syncGistUI('error');
+        if (!silent) showToast(err.message || 'Не удалось сохранить в облако');
+        return false;
+      } finally {
+        isSyncingNow = false;
+      }
+    }
+
+    document.getElementById('header-sync-btn').addEventListener('click', () => {
+      if (state.gistToken && state.gistId) {
+        pullFromGist(false);
+      } else {
+        switchTab('progress');
+        showToast('Настрой синхронизацию GitHub Gist ниже');
+      }
+    });
+
+    // ==================== МОБИЛЬНЫЙ АККОРДЕОН РЕЖИМОВ ====================
+    const controlsDrawer = document.getElementById('tutor-controls-drawer');
+    const toggleMobileControlsBtn = document.getElementById('toggle-mobile-controls-btn');
+    const mobileChevron = document.getElementById('mobile-controls-chevron');
+    let mobileDrawerOpen = false;
+
+    function setMobileDrawer(open) {
+      mobileDrawerOpen = open;
+      if (open) {
+        controlsDrawer.classList.remove('hidden');
+        controlsDrawer.classList.add('flex');
+        mobileChevron.textContent = '▴';
+      } else {
+        controlsDrawer.classList.add('hidden');
+        controlsDrawer.classList.remove('flex');
+        mobileChevron.textContent = '▾';
+      }
+    }
+
+    toggleMobileControlsBtn.addEventListener('click', () => {
+      setMobileDrawer(!mobileDrawerOpen);
+    });
+
+    // ==================== ПЕРСОНА И АВАТАР ====================
+    const avatarEl = document.getElementById('tutor-avatar');
+    const avatarInnerEl = document.getElementById('tutor-avatar-inner');
+    const avatarMobileEl = document.getElementById('tutor-avatar-mobile');
+    const avatarMobileInnerEl = document.getElementById('tutor-avatar-mobile-inner');
+    const voiceVizEl = document.getElementById('voice-visualizer');
+    const voiceVizMobileEl = document.getElementById('voice-visualizer-mobile');
+    const statusTextEl = document.getElementById('tutor-status-text');
+    const statusTextMobileEl = document.getElementById('tutor-status-text-mobile');
+
+    function setTutorStatus(text) {
+      if (statusTextEl) statusTextEl.textContent = text;
+      if (statusTextMobileEl) statusTextMobileEl.textContent = text;
+    }
+
+    function syncPersonaUI() {
+      const p = PERSONAS[state.voiceGender] || PERSONAS.male;
+      const isFemale = state.voiceGender === 'female';
+
+      document.getElementById('header-brand-title').textContent = `${p.name} AI`;
+      document.getElementById('tutor-name-heading').textContent = p.name;
+
+      const badge = document.getElementById('tutor-accent-badge');
+      badge.textContent = p.badge;
+      badge.className = isFemale
+        ? 'px-1.5 py-0.5 text-[10px] font-semibold rounded bg-pink-500/20 text-pink-300 border border-pink-500/30'
+        : 'px-1.5 py-0.5 text-[10px] font-semibold rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30';
+
+      const ringGradient = isFemale ? 'from-pink-500 to-amber-400' : 'from-indigo-500 to-cyan-500';
+      avatarEl.className = `w-20 h-20 rounded-full bg-gradient-to-br ${ringGradient} p-0.5 shrink-0 transition-transform`;
+      avatarMobileEl.className = `w-9 h-9 rounded-full bg-gradient-to-br ${ringGradient} p-0.5 shrink-0 transition-transform`;
+
+      const svgDesktop = isFemale
+        ? `<svg class="w-11 h-11 text-pink-300" viewBox="0 0 100 100" fill="none">
+            <path d="M28 45 C28 22 72 22 72 45 L75 64 C68 60 64 56 64 50 C56 54 44 54 36 50 C36 56 32 60 25 64 Z" fill="currentColor" opacity="0.28"/>
+            <circle cx="50" cy="41" r="15" stroke="currentColor" stroke-width="3" />
+            <path d="M42 47 Q50 54 58 47" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+            <path d="M26 82 C26 67 74 67 74 82" fill="currentColor" opacity="0.3" />
+          </svg>`
+        : `<svg class="w-11 h-11 text-indigo-300" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="40" r="18" fill="currentColor" opacity="0.25" />
+            <circle cx="50" cy="40" r="16" stroke="currentColor" stroke-width="3" />
+            <rect x="33" y="34" width="5" height="10" rx="2.5" fill="currentColor" />
+            <rect x="62" y="34" width="5" height="10" rx="2.5" fill="currentColor" />
+            <path d="M41 48 Q50 55 59 48" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+            <path d="M24 82 C24 66 76 66 76 82" fill="currentColor" opacity="0.3" />
+          </svg>`;
+
+      const svgMobile = isFemale
+        ? `<svg class="w-5 h-5 text-pink-300" viewBox="0 0 100 100" fill="none">
+            <path d="M28 45 C28 22 72 22 72 45 L75 64 C68 60 64 56 64 50 C56 54 44 54 36 50 C36 56 32 60 25 64 Z" fill="currentColor" opacity="0.28"/>
+            <circle cx="50" cy="41" r="15" stroke="currentColor" stroke-width="4" />
+            <path d="M42 47 Q50 54 58 47" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+          </svg>`
+        : `<svg class="w-5 h-5 text-indigo-300" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="40" r="16" stroke="currentColor" stroke-width="4" />
+            <path d="M41 48 Q50 55 59 48" stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+          </svg>`;
+
+      avatarInnerEl.innerHTML = svgDesktop;
+      avatarMobileInnerEl.innerHTML = svgMobile;
+
+      document.querySelectorAll('.voice-gender-btn').forEach(btn => {
+        const active = btn.dataset.voice === state.voiceGender;
+        btn.className = active
+          ? (isFemale
+              ? 'voice-gender-btn px-2 py-1 rounded-lg text-[11px] font-semibold bg-pink-600 text-white transition whitespace-nowrap'
+              : 'voice-gender-btn px-2 py-1 rounded-lg text-[11px] font-semibold bg-indigo-600 text-white transition whitespace-nowrap')
+          : 'voice-gender-btn px-2 py-1 rounded-lg text-[11px] font-semibold text-slate-400 hover:text-white transition whitespace-nowrap';
+      });
+    }
+
+    document.querySelectorAll('.voice-gender-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nextGender = btn.dataset.voice;
+        if (state.voiceGender === nextGender) return;
+        state.voiceGender = nextGender;
+        saveState();
+        syncPersonaUI();
+        const p = PERSONAS[state.voiceGender];
+        showToast(`Репетитор: ${p.name} (${p.badge})`);
+        speakText(`Hi! I'm ${p.name}, your American English coach.`, true, 1.0, false);
+      });
+    });
+
+    // ==================== ДВУХУРОВНЕВАЯ ОЗВУЧКА (GEMINI 3 + BROWSER US) ====================
+    const ttsAudioCache = new Map();
+    let activeHtmlAudio = null;
+
+    function setAvatarSpeaking(speaking) {
+      isSpeakingNow = speaking;
+      const ringClass = state.voiceGender === 'female' ? 'speaking-ring-female' : 'speaking-ring';
+
+      [avatarEl, avatarMobileEl].forEach(el => {
+        if (!el) return;
+        el.classList.remove('speaking-ring', 'speaking-ring-female');
+        if (speaking) el.classList.add(ringClass);
+      });
+
+      [voiceVizEl, voiceVizMobileEl].forEach(viz => {
+        if (!viz) return;
+        viz.classList.toggle('opacity-100', speaking);
+        viz.classList.toggle('eq-active', speaking);
+        viz.classList.toggle('opacity-40', !speaking);
+      });
+
+      if (!isSending) {
+        setTutorStatus(speaking ? 'Говорит вслух (en-US)...' : 'Готов к диалогу');
+      }
+    }
+
+    function stopAllAudio() {
+      if (activeHtmlAudio) {
+        try {
+          activeHtmlAudio.pause();
+          activeHtmlAudio.currentTime = 0;
+        } catch {}
+        activeHtmlAudio = null;
+      }
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch {}
+      }
+      setAvatarSpeaking(false);
+    }
+
+    function onSpeechFinished(triggerHandsFree) {
+      setAvatarSpeaking(false);
+      if (triggerHandsFree && state.handsFree && !isSending && !isListeningNow) {
+        setTimeout(() => startMicrophoneListening('chat'), 350);
+      }
+    }
+
+    function pickBrowserUSVoice(gender) {
+      if (!('speechSynthesis' in window)) return null;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || !voices.length) return null;
+
+      const persona = PERSONAS[gender] || PERSONAS.male;
+      const usVoices = voices.filter(v => /en[-_]US/i.test(v.lang));
+      const enVoices = usVoices.length ? usVoices : voices.filter(v => /^en/i.test(v.lang));
+
+      const exact = enVoices.find(v => persona.browserPatterns.test(v.name) && !persona.avoidPatterns.test(v.name));
+      if (exact) return exact;
+
+      const notOpposite = enVoices.find(v => !persona.avoidPatterns.test(v.name));
+      return notOpposite || enVoices[0] || null;
+    }
+
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    function speakWithBrowser(cleanText, rate, triggerHandsFree) {
+      if (!('speechSynthesis' in window)) {
+        setAvatarSpeaking(false);
+        return;
+      }
+      const utter = new SpeechSynthesisUtterance(cleanText);
+      utter.lang = 'en-US';
+      utter.rate = rate;
+
+      const voice = pickBrowserUSVoice(state.voiceGender);
+      if (voice) utter.voice = voice;
+
+      utter.onstart = () => setAvatarSpeaking(true);
+      utter.onend = () => onSpeechFinished(triggerHandsFree);
+      utter.onerror = () => setAvatarSpeaking(false);
+
+      window.speechSynthesis.speak(utter);
+    }
+
+    function pcmBase64ToWavUrl(base64Pcm, sampleRate = 24000) {
+      const binary = atob(base64Pcm);
+      const pcmLength = binary.length;
+      const buffer = new ArrayBuffer(44 + pcmLength);
+      const view = new DataView(buffer);
+
+      const writeStr = (offset, str) => {
+        for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+      };
+
+      writeStr(0, 'RIFF');
+      view.setUint32(4, 36 + pcmLength, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeStr(36, 'data');
+      view.setUint32(40, pcmLength, true);
+
+      const bytes = new Uint8Array(buffer, 44);
+      for (let i = 0; i < pcmLength; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
+    }
+
+    async function fetchGeminiAudioUrl(cleanText, gender) {
+      const cacheKey = `${gender}:${cleanText}`;
+      if (ttsAudioCache.has(cacheKey)) {
+        return ttsAudioCache.get(cacheKey);
+      }
+
+      const key = (state.apiKey || '').trim();
+      if (!key) return null;
+
+      const persona = PERSONAS[gender] || PERSONAS.male;
+      const model = VALID_MODELS.includes(state.model) ? state.model : 'gemini-3.5-flash';
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': key
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              role: 'user',
+              parts: [{
+                text: `Read the following English text aloud clearly and naturally with a friendly General American (US) accent. Do not add any extra words:\n\n${cleanText}`
+              }]
+            }
+          ],
+          generationConfig: {
+            responseModalities: ['AUDIO'],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: {
+                  voiceName: persona.geminiVoice
+                }
+              }
+            }
+          }
+        })
+      });
+
+      if (!res.ok) return null;
+      const data = await res.json();
+      const parts = data?.candidates?.[0]?.content?.parts || [];
+      const audioPart = parts.find(p => p.inlineData && p.inlineData.data);
+      if (!audioPart) return null;
+
+      const mime = audioPart.inlineData.mimeType || 'audio/wav';
+      const b64 = audioPart.inlineData.data;
+      const audioUrl = mime.includes('pcm') || mime.includes('L16')
+        ? pcmBase64ToWavUrl(b64, 24000)
+        : `data:${mime};base64,${b64}`;
+
+      ttsAudioCache.set(cacheKey, audioUrl);
+      return audioUrl;
+    }
+
+    async function speakText(text, force = false, customRate = null, triggerHandsFree = false) {
+      if (!text) return;
+      if (!force && !state.autoSpeak) {
+        if (triggerHandsFree && state.handsFree) {
+          setTimeout(() => startMicrophoneListening('chat'), 300);
+        }
+        return;
+      }
+
+      stopAllAudio();
+      const cleanText = String(text).replace(/[*_`#]+/g, '').trim();
+      if (!cleanText) return;
+
+      const rate = customRate || RATES[state.rateIndex] || 0.9;
+      const useGeminiTTS = state.ttsEngine === 'gemini' && Boolean((state.apiKey || '').trim());
+
+      if (useGeminiTTS) {
+        try {
+          if (!isSending) setTutorStatus('Генерирую голос...');
+          const audioUrl = await fetchGeminiAudioUrl(cleanText, state.voiceGender);
+          if (audioUrl) {
+            const audio = new Audio(audioUrl);
+            audio.playbackRate = rate;
+            activeHtmlAudio = audio;
+            audio.onplay = () => setAvatarSpeaking(true);
+            audio.onended = () => {
+              activeHtmlAudio = null;
+              onSpeechFinished(triggerHandsFree);
+            };
+            audio.onerror = () => {
+              activeHtmlAudio = null;
+              speakWithBrowser(cleanText, rate, triggerHandsFree);
+            };
+            await audio.play();
+            return;
+          }
+        } catch {}
+      }
+
+      speakWithBrowser(cleanText, rate, triggerHandsFree);
+    }
+
+    document.addEventListener('pointerdown', function unlockAudioOnce() {
+      if ('speechSynthesis' in window) {
+        try {
+          const silent = new SpeechSynthesisUtterance('');
+          silent.volume = 0;
+          window.speechSynthesis.speak(silent);
+        } catch {}
+      }
+      document.removeEventListener('pointerdown', unlockAudioOnce);
+    }, { once: true });
+
+    // ==================== НАВИГАЦИЯ ПО ВКЛАДКАМ ====================
+    function switchTab(tabName) {
+      stopAllAudio();
+      document.querySelectorAll('section[id^="tab-"]').forEach(sec => {
+        sec.classList.toggle('hidden', sec.id !== `tab-${tabName}`);
+      });
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        const active = btn.dataset.tab === tabName;
+        if (btn.closest('nav.md\\:flex')) {
+          btn.classList.toggle('bg-indigo-600', active);
+          btn.classList.toggle('text-white', active);
+          btn.classList.toggle('text-slate-300', !active);
+        } else {
+          btn.classList.toggle('text-indigo-400', active);
+          btn.classList.toggle('text-slate-400', !active);
+        }
+      });
+
+      if (tabName === 'lessons') renderLessonsMap();
+      if (tabName === 'vocab') renderVocab();
+      if (tabName === 'progress') renderProgress();
+    }
+
+    document.querySelectorAll('.nav-tab').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // ==================== МОДУЛЬ УРОКОВ (ENGLISH GALAXY STYLE) ====================
+    let activeLesson = null;
+    let activeDrills = [];
+    let drillIdx = 0;
+    let drillCorrectCount = 0;
+    let drillInputMode = 'tiles';
+    let drillChecked = false;
+    let tileBank = [];
+    let tileSelected = [];
+    let formulaVisible = true;
+
+    function renderLessonsMap() {
+      document.getElementById('lessons-map-view').classList.remove('hidden');
+      document.getElementById('lesson-player-view').classList.add('hidden');
+
+      const completedSet = new Set(state.completedLessons || []);
+      document.getElementById('lessons-completed-pill').textContent = `Пройдено: ${completedSet.size} из ${COURSE_LESSONS.length}`;
+
+      const grid = document.getElementById('lessons-grid');
+      grid.innerHTML = '';
+
+      COURSE_LESSONS.forEach(lesson => {
+        const done = completedSet.has(lesson.id);
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = done
+          ? 'text-left bg-slate-900/90 hover:bg-slate-800/90 border border-emerald-500/40 rounded-2xl p-4 space-y-2 transition flex flex-col justify-between'
+          : 'text-left bg-slate-900/90 hover:bg-slate-800/90 border border-slate-800 hover:border-indigo-500/40 rounded-2xl p-4 space-y-2 transition flex flex-col justify-between';
+
+        card.innerHTML = `
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">
+                Уровень ${escapeHtml(lesson.level)}
+              </span>
+              <span class="text-xs font-semibold ${done ? 'text-emerald-400' : 'text-slate-500'}">
+                ${done ? '✓ Пройдено' : `${lesson.drills.length} фраз →`}
+              </span>
+            </div>
+            <h3 class="font-bold text-sm sm:text-base text-white">${escapeHtml(lesson.title)}</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">${escapeHtml(lesson.subtitle)}</p>
+          </div>
+          <div class="pt-2 border-t border-slate-800/80 text-[11px] text-indigo-300/90 truncate">
+            ${lesson.formula}
+          </div>
+        `;
+
+        card.addEventListener('click', () => openLesson(lesson.id));
+        grid.appendChild(card);
+      });
+    }
+
+    function openLesson(lessonId) {
+      const lesson = COURSE_LESSONS.find(l => l.id === lessonId);
+      if (!lesson) return;
+
+      activeLesson = lesson;
+      activeDrills = deepCopy(lesson.drills);
+      drillIdx = 0;
+      drillCorrectCount = 0;
+      formulaVisible = true;
+
+      document.getElementById('lessons-map-view').classList.add('hidden');
+      document.getElementById('lesson-player-view').classList.remove('hidden');
+
+      document.getElementById('lesson-player-badge').textContent = `Уровень ${lesson.level}`;
+      document.getElementById('lesson-title').textContent = lesson.title;
+      document.getElementById('lesson-subtitle').textContent = lesson.subtitle;
+      document.getElementById('lesson-formula-box').innerHTML = `📐 <b>Формула:</b> ${lesson.formula}`;
+      document.getElementById('lesson-formula-body').classList.remove('hidden');
+      document.getElementById('toggle-formula-btn').textContent = 'Скрыть схему';
+
+      const exList = document.getElementById('lesson-examples-list');
+      exList.innerHTML = '';
+      lesson.examples.forEach(ex => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center justify-between gap-2 bg-slate-950/80 border border-slate-800/80 rounded-xl px-3 py-2 text-xs';
+        row.innerHTML = `
+          <div>
+            <p class="font-semibold text-slate-100">${escapeHtml(ex.en)}</p>
+            <p class="text-slate-400">${escapeHtml(ex.ru)}</p>
+          </div>
+          <button type="button" class="px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-indigo-300 shrink-0">🔊</button>
+        `;
+        row.querySelector('button').addEventListener('click', () => speakText(ex.en, true));
+        exList.appendChild(row);
+      });
+
+      setupCurrentDrill();
+    }
+
+    document.getElementById('lesson-back-btn').addEventListener('click', () => {
+      renderLessonsMap();
+    });
+
+    document.getElementById('toggle-formula-btn').addEventListener('click', () => {
+      formulaVisible = !formulaVisible;
+      document.getElementById('lesson-formula-body').classList.toggle('hidden', !formulaVisible);
+      document.getElementById('toggle-formula-btn').textContent = formulaVisible ? 'Скрыть схему' : 'Показать схему';
+    });
+
+    function tokenizeSentence(sentence) {
+      const clean = sentence.trim().replace(/[.!?]+$/, '');
+      return clean.split(/\s+/).filter(Boolean);
+    }
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function syncDrillModeButtons() {
+      document.querySelectorAll('.drill-mode-btn').forEach(btn => {
+        const active = btn.dataset.drillMode === drillInputMode;
+        btn.className = active
+          ? 'drill-mode-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-indigo-600 text-white transition'
+          : 'drill-mode-btn px-2.5 py-1 rounded-lg text-[11px] font-semibold text-slate-400 hover:text-white transition';
+      });
+      document.getElementById('drill-tiles-area').classList.toggle('hidden', drillInputMode !== 'tiles');
+      document.getElementById('drill-type-area').classList.toggle('hidden', drillInputMode !== 'type');
+    }
+
+    document.querySelectorAll('.drill-mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        drillInputMode = btn.dataset.drillMode;
+        syncDrillModeButtons();
+      });
+    });
+
+    function renderTiles() {
+      const selEl = document.getElementById('drill-selected-words');
+      const bankEl = document.getElementById('drill-word-bank');
+      selEl.innerHTML = '';
+      bankEl.innerHTML = '';
+
+      if (!tileSelected.length) {
+        selEl.innerHTML = '<span class="text-xs text-slate-500">Нажимай на слова ниже, чтобы собрать фразу...</span>';
+      } else {
+        tileSelected.forEach((item, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.disabled = drillChecked;
+          btn.className = 'px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow transition';
+          btn.textContent = item.word;
+          btn.addEventListener('click', () => {
+            if (drillChecked) return;
+            tileSelected.splice(idx, 1);
+            item.used = false;
+            renderTiles();
+          });
+          selEl.appendChild(btn);
+        });
+      }
+
+      tileBank.forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.disabled = item.used || drillChecked;
+        btn.className = item.used
+          ? 'px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-slate-950 text-slate-700 border border-slate-800/50 cursor-default'
+          : 'px-3 py-1.5 rounded-xl text-xs sm:text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 transition';
+        btn.textContent = item.word;
+        btn.addEventListener('click', () => {
+          if (item.used || drillChecked) return;
+          item.used = true;
+          tileSelected.push(item);
+          renderTiles();
+        });
+        bankEl.appendChild(btn);
+      });
+    }
+
+    function setupCurrentDrill() {
+      const cur = activeDrills[drillIdx];
+      if (!cur) return;
+
+      drillChecked = false;
+      syncDrillModeButtons();
+
+      document.getElementById('drill-counter').textContent = `Фраза ${drillIdx + 1} из ${activeDrills.length}`;
+      document.getElementById('drill-score').textContent = `Верно: ${drillCorrectCount}`;
+      document.getElementById('drill-progress-bar').style.width = `${Math.round(((drillIdx + 1) / activeDrills.length) * 100)}%`;
+
+      document.getElementById('drill-ru-prompt').textContent = cur.ru;
+      const hintEl = document.getElementById('drill-hint-text');
+      hintEl.textContent = cur.hint ? `💡 ${cur.hint}` : '';
+      hintEl.classList.add('hidden');
+
+      document.getElementById('drill-feedback-box').classList.add('hidden');
+      document.getElementById('drill-text-input').value = '';
+      document.getElementById('drill-text-input').disabled = false;
+
+      const tokens = tokenizeSentence(cur.en);
+      tileBank = shuffleArray(tokens).map((word, id) => ({ id, word, used: false }));
+      tileSelected = [];
+      renderTiles();
+
+      const actionBtn = document.getElementById('drill-action-btn');
+      actionBtn.textContent = 'Проверить';
+      actionBtn.className = 'px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition';
+    }
+
+    function normalizeEnglishForCheck(str) {
+      return String(str || '')
+        .toLowerCase()
+        .replace(/’/g, "'")
+        .replace(/\bi'm\b/g, 'i am')
+        .replace(/\byou're\b/g, 'you are')
+        .replace(/\bhe's\b/g, 'he is')
+        .replace(/\bshe's\b/g, 'she is')
+        .replace(/\bit's\b/g, 'it is')
+        .replace(/\bwe're\b/g, 'we are')
+        .replace(/\bthey're\b/g, 'they are')
+        .replace(/\bdon't\b/g, 'do not')
+        .replace(/\bdoesn't\b/g, 'does not')
+        .replace(/\bdidn't\b/g, 'did not')
+        .replace(/\bwon't\b/g, 'will not')
+        .replace(/\bcan't\b/g, 'cannot')
+        .replace(/\bi've\b/g, 'i have')
+        .replace(/\bwe've\b/g, 'we have')
+        .replace(/\bthey've\b/g, 'they have')
+        .replace(/[^a-z0-9\s]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function checkCurrentDrill() {
+      const cur = activeDrills[drillIdx];
+      if (!cur) return;
+
+      const userRaw = drillInputMode === 'tiles'
+        ? tileSelected.map(t => t.word).join(' ')
+        : document.getElementById('drill-text-input').value.trim();
+
+      if (!userRaw) {
+        showToast(drillInputMode === 'tiles' ? 'Собери фразу из плиток' : 'Введи или надиктуй перевод');
+        return;
+      }
+
+      drillChecked = true;
+      document.getElementById('drill-text-input').disabled = true;
+      renderTiles();
+
+      const isCorrect = normalizeEnglishForCheck(userRaw) === normalizeEnglishForCheck(cur.en);
+      if (isCorrect) {
+        drillCorrectCount += 1;
+      }
+      state.repliesCount += 1;
+      saveState();
+
+      document.getElementById('drill-score').textContent = `Верно: ${drillCorrectCount}`;
+
+      const fbBox = document.getElementById('drill-feedback-box');
+      const fbTitle = document.getElementById('drill-feedback-title');
+      fbBox.classList.remove('hidden');
+
+      if (isCorrect) {
+        fbBox.className = 'rounded-2xl p-3.5 border bg-emerald-950/40 border-emerald-500/40 space-y-1.5';
+        fbTitle.className = 'text-sm font-bold text-emerald-300';
+        fbTitle.textContent = '✓ Отлично! Всё верно';
+      } else {
+        fbBox.className = 'rounded-2xl p-3.5 border bg-rose-950/35 border-rose-500/40 space-y-1.5';
+        fbTitle.className = 'text-sm font-bold text-rose-300';
+        fbTitle.textContent = '✕ Есть расхождение';
+      }
+
+      document.getElementById('drill-correct-en').textContent = `Эталон: ${cur.en}`;
+      document.getElementById('drill-grammar-note').textContent = cur.note || '';
+
+      speakText(cur.en, false, null, false);
+
+      const actionBtn = document.getElementById('drill-action-btn');
+      const isLast = drillIdx >= activeDrills.length - 1;
+      actionBtn.textContent = isLast ? 'Завершить урок 🎉' : 'Дальше →';
+      actionBtn.className = 'px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition';
+    }
+
+    document.getElementById('drill-action-btn').addEventListener('click', () => {
+      if (!drillChecked) {
+        checkCurrentDrill();
+        return;
+      }
+
+      if (drillIdx < activeDrills.length - 1) {
+        drillIdx += 1;
+        setupCurrentDrill();
+      } else {
+        if (activeLesson && !state.completedLessons.includes(activeLesson.id)) {
+          state.completedLessons.push(activeLesson.id);
+          saveState();
+        }
+        showToast(`Урок пройден! Результат: ${drillCorrectCount} из ${activeDrills.length}`);
+        renderLessonsMap();
+      }
+    });
+
+    document.getElementById('drill-hint-btn').addEventListener('click', () => {
+      const hintEl = document.getElementById('drill-hint-text');
+      if (hintEl.textContent) {
+        hintEl.classList.remove('hidden');
+      } else {
+        showToast('Подсказка для этой фразы не требуется');
+      }
+    });
+
+    document.getElementById('drill-clear-btn').addEventListener('click', () => {
+      if (drillChecked) return;
+      if (drillInputMode === 'tiles') {
+        tileSelected = [];
+        tileBank.forEach(t => (t.used = false));
+        renderTiles();
+      } else {
+        document.getElementById('drill-text-input').value = '';
+      }
+    });
+
+    document.getElementById('drill-speak-answer-btn').addEventListener('click', () => {
+      const cur = activeDrills[drillIdx];
+      if (cur) speakText(cur.en, true);
+    });
+
+    document.getElementById('drill-save-phrase-btn').addEventListener('click', () => {
+      const cur = activeDrills[drillIdx];
+      if (cur) addWordToVocab(cur.en, cur.ru, cur.en, '');
+    });
+
+    document.getElementById('drill-text-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('drill-action-btn').click();
+      }
+    });
+
+    document.getElementById('drill-mic-btn').addEventListener('click', () => {
+      if (isListeningNow && speechRec) {
+        try { speechRec.stop(); } catch {}
+      } else {
+        startMicrophoneListening('drill');
+      }
+    });
+
+    document.getElementById('lesson-ai-more-btn').addEventListener('click', async () => {
+      if (!activeLesson) return;
+      if (!state.apiKey) {
+        showToast('Добавь ключ Gemini API во вкладке «Прогресс»');
+        return;
+      }
+      const btn = document.getElementById('lesson-ai-more-btn');
+      btn.disabled = true;
+      btn.textContent = '⏳ Генерирую...';
+      try {
+        const res = await callGemini({
+          useChatHistory: false,
+          systemInstruction: `You are an English grammar course creator (like English Galaxy). Generate 5 fresh Russian-to-English translation drills strictly practicing the lesson formula.
+Return strictly valid JSON:
+{
+  "drills": [
+    {"ru": "Russian sentence", "en": "Natural US English translation without contractions", "hint": "short Russian hint", "note": "short Russian grammar explanation"}
+  ]
+}`,
+          promptText: `Lesson: ${activeLesson.title}. Formula: ${activeLesson.formula.replace(/<[^>]+>/g, '')}. Level: ${state.level}. Avoid repeating: ${activeDrills.map(d => d.en).join('; ')}`
+        });
+        if (Array.isArray(res.drills) && res.drills.length) {
+          const validNew = res.drills
+            .filter(d => d && d.ru && d.en)
+            .map(d => ({
+              ru: String(d.ru).trim(),
+              en: String(d.en).trim(),
+              hint: String(d.hint || '').trim(),
+              note: String(d.note || '').trim()
+            }));
+          if (validNew.length) {
+            activeDrills.push(...validNew);
+            if (drillChecked && drillIdx === activeDrills.length - validNew.length - 1) {
+              document.getElementById('drill-action-btn').textContent = 'Дальше →';
+            }
+            document.getElementById('drill-counter').textContent = `Фраза ${drillIdx + 1} из ${activeDrills.length}`;
+            showToast(`Добавлено ${validNew.length} новых фраз!`);
+          }
+        }
+      } catch (err) {
+        showToast(err.message || 'Ошибка генерации фраз');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✨ +5 фраз по теме';
+      }
+    });
+
+    // ==================== РЕЖИМЫ, ПОДТЕМЫ И СТАРТОВЫЕ РЕПЛИКИ ЧАТА ====================
+    function getActiveSubtopicObj(mode) {
+      const list = SUBTOPICS[mode];
+      if (!list) return null;
+      const selectedId = state.subtopic?.[mode];
+      return list.find(t => t.id === selectedId) || list[0];
+    }
+
+    function getInitialTutorMessage(mode) {
+      const p = PERSONAS[state.voiceGender] || PERSONAS.male;
+      if (mode === 'placement') {
+        return {
+          role: 'assistant',
+          english: `Hi! I'm ${p.name}. Let's do a quick 6-question check to see where your English is right now. Question 1: What do you usually do on weekends?`,
+          ruTranslation: `Привет! Я ${p.name}. Давай проведём быстрый тест из 6 вопросов, чтобы определить твой уровень. Вопрос 1: Чем ты обычно занимаешься по выходным?`,
+          correction: null,
+          natural: null,
+          words: [
+            { en: 'on weekends', ipa: '/ɑːn ˈwiːk.endz/', ru: 'по выходным', ex: 'I go out on weekends.' },
+            { en: 'in my free time', ipa: '/ɪn maɪ friː taɪm/', ru: 'в свободное время', ex: 'I read in my free time.' }
+          ]
+        };
+      }
+      if (mode === 'scenarios' || mode === 'grammar') {
+        const topic = getActiveSubtopicObj(mode);
+        return {
+          role: 'assistant',
+          english: topic.openingEn,
+          ruTranslation: topic.openingRu,
+          correction: null,
+          natural: null,
+          words: deepCopy(topic.words || [])
+        };
+      }
+      return {
+        role: 'assistant',
+        english: `Hey! Good to see you. I'm ${p.name}. Tell me a little bit about your week — how has it been going?`,
+        ruTranslation: `Привет! Рад тебя видеть. Я ${p.name}. Расскажи немного о своей неделе — как она проходит?`,
+        correction: null,
+        natural: null,
+        words: [
+          { en: 'How has it been going?', ipa: '/haʊ hæz ɪt biːn ˈɡoʊ.ɪŋ/', ru: 'Как идут дела / как проходит неделя?', ex: 'How has your week been going?' },
+          { en: 'pretty busy', ipa: '/ˈprɪt.i ˈbɪz.i/', ru: 'довольно загруженно', ex: 'My week has been pretty busy.' }
+        ]
+      };
+    }
+
+    function renderSubtopicPicker() {
+      const wrap = document.getElementById('subtopic-picker-wrap');
+      const chipsEl = document.getElementById('subtopic-chips');
+      const labelEl = document.getElementById('subtopic-picker-label');
+      const list = SUBTOPICS[state.mode];
+
+      if (!list) {
+        wrap.classList.add('hidden');
+        return;
+      }
+
+      wrap.classList.remove('hidden');
+      labelEl.textContent = state.mode === 'scenarios' ? '🎭 Ситуация:' : '⚡ Тема грамматики:';
+      chipsEl.innerHTML = '';
+
+      const currentId = state.subtopic?.[state.mode] || list[0].id;
+      list.forEach(topic => {
+        const active = topic.id === currentId;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = active
+          ? 'px-2.5 py-1.5 rounded-xl text-[11px] font-semibold bg-indigo-600/30 text-indigo-200 border border-indigo-500/50 transition whitespace-nowrap'
+          : 'px-2.5 py-1.5 rounded-xl text-[11px] font-medium bg-slate-950 hover:bg-slate-800 text-slate-400 border border-slate-800 transition whitespace-nowrap';
+        btn.textContent = topic.label;
+        btn.addEventListener('click', () => {
+          state.subtopic[state.mode] = topic.id;
+          startMode(state.mode, true, true);
+        });
+        chipsEl.appendChild(btn);
+      });
+    }
+
+    function syncModeButtons(mode) {
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        const active = btn.dataset.mode === mode;
+        btn.className = active
+          ? 'mode-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white flex items-center justify-center gap-1.5 transition whitespace-nowrap'
+          : 'mode-btn px-2.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 flex items-center justify-center gap-1.5 transition whitespace-nowrap';
+      });
+    }
+
+    function startMode(mode, shouldSpeak = true, collapseAfterSelect = false) {
+      state.mode = mode;
+      state.placementStep = 1;
+      const firstMsg = getInitialTutorMessage(mode);
+      state.history = [firstMsg];
+      saveState();
+
+      syncModeButtons(mode);
+      renderSubtopicPicker();
+      updateModeInfoUI();
+      renderChat();
+
+      if (collapseAfterSelect || (mode !== 'scenarios' && mode !== 'grammar')) {
+        setMobileDrawer(false);
+      }
+
+      if (shouldSpeak) {
+        speakText(firstMsg.english, false, null, false);
+      }
+    }
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const nextMode = btn.dataset.mode;
+        startMode(nextMode, true, false);
+      });
+    });
+
+    document.getElementById('reset-chat-btn').addEventListener('click', () => {
+      startMode(state.mode, true, true);
+      showToast('Диалог перезапущен');
+    });
+
+    function updateModeInfoUI() {
+      const titleEl = document.getElementById('mode-info-title');
+      const labelEl = document.getElementById('placement-step-label');
+      const barWrap = document.getElementById('placement-progress-wrap');
+      const bar = document.getElementById('placement-progress-bar');
+      const descEl = document.getElementById('mode-info-desc');
+      const mobileModeLabel = document.getElementById('mobile-active-mode-label');
+      const mobileLevelPill = document.getElementById('mobile-level-pill');
+
+      const topic = getActiveSubtopicObj(state.mode);
+      const MODE_META = {
+        placement: {
+          short: `🎯 Тест уровня (${Math.min(state.placementStep || 1, 6)}/6)`,
+          title: 'Диагностика CEFR',
+          desc: 'Ответь на 6 вопросов, чтобы уточнить свой уровень. Нажимай на зелёные чипсы слов, чтобы сохранить их в словарь.'
+        },
+        freetalk: {
+          short: '💬 Свободный чат',
+          title: 'Свободный диалог',
+          desc: 'Обсуждай любые темы на американском английском с мягкой коррекцией ошибок.'
+        },
+        scenarios: {
+          short: `🎭 ${topic ? topic.label : 'Сценарии'}`,
+          title: `Сценарий: ${topic ? topic.label : ''}`,
+          desc: 'Отвечай в роли участника живой американской ситуации. Репетитор поддержит диалог и подскажет лексику.'
+        },
+        grammar: {
+          short: `⚡ ${topic ? topic.label : 'Грамматика'}`,
+          title: `Грамматика: ${topic ? topic.label : ''}`,
+          desc: 'Тренировка конструкций в живых вопросах с мгновенным разбором твоих ответов.'
+        }
+      };
+
+      const meta = MODE_META[state.mode] || MODE_META.freetalk;
+      if (titleEl) titleEl.textContent = meta.title;
+      if (descEl) descEl.textContent = meta.desc;
+      if (mobileModeLabel) mobileModeLabel.textContent = meta.short;
+      if (mobileLevelPill) mobileLevelPill.textContent = state.level;
+
+      if (state.mode === 'placement') {
+        const step = Math.min(state.placementStep || 1, 6);
+        if (labelEl) {
+          labelEl.classList.remove('hidden');
+          labelEl.textContent = state.levelConfirmed ? 'Тест завершён' : `Вопрос ${step} из 6`;
+        }
+        if (barWrap) barWrap.classList.remove('hidden');
+        if (bar) bar.style.width = `${Math.round((step / 6) * 100)}%`;
+      } else {
+        if (labelEl) labelEl.classList.add('hidden');
+        if (barWrap) barWrap.classList.add('hidden');
+      }
+
+      const badge = document.getElementById('header-level-badge');
+      if (badge) {
+        badge.textContent = `• ${state.level}${state.levelConfirmed ? '' : ' (предв.)'}`;
+      }
+    }
+
+    // ==================== ОТРИСОВКА ЧАТА И СЛОВАРЯ ====================
+    function isWordSaved(en) {
+      const norm = String(en || '').trim().toLowerCase();
+      return state.vocab.some(w => w.en.trim().toLowerCase() === norm);
+    }
+
+    function addWordToVocab(en, ru = 'перевод уточняется', ex = '', ipa = '') {
+      const cleanEn = String(en || '').trim();
+      if (!cleanEn) return;
+      if (isWordSaved(cleanEn)) {
+        showToast(`«${cleanEn}» уже в словаре`);
+        return;
+      }
+      state.vocab.unshift({
+        id: 'w_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        en: cleanEn,
+        ipa: String(ipa || '').trim(),
+        ru: String(ru || '').trim() || 'добавлено из диалога',
+        ex: String(ex || '').trim() || `I want to use "${cleanEn}" in speech.`,
+        learned: false
+      });
+      saveState();
+      updateVocabCounters();
+      renderChat();
+      showToast(`Добавлено: ${cleanEn}`);
+    }
+
+    function updateVocabCounters() {
+      const total = state.vocab.length;
+      const learned = state.vocab.filter(w => w.learned).length;
+      document.querySelectorAll('.vocab-count-badge, .vocab-count-inline').forEach(el => {
+        el.textContent = total;
+      });
+      const statVocab = document.getElementById('stat-vocab');
+      if (statVocab) statVocab.textContent = `${learned}/${total}`;
+    }
+
+    function renderChat() {
+      const container = document.getElementById('chat-messages');
+      if (!container) return;
+      container.innerHTML = '';
+
+      state.history.forEach((msg, idx) => {
+        if (msg.role === 'user') {
+          const wrap = document.createElement('div');
+          wrap.className = 'flex flex-col items-end space-y-1.5';
+
+          const bubble = document.createElement('div');
+          bubble.className = 'max-w-[85%] sm:max-w-[75%] rounded-2xl rounded-tr-sm bg-indigo-600 text-white px-3.5 py-2.5 text-sm leading-relaxed';
+          bubble.textContent = msg.text;
+          wrap.appendChild(bubble);
+
+          if (msg.error) {
+            const errRow = document.createElement('div');
+            errRow.className = 'flex flex-wrap items-center justify-end gap-2 max-w-[85%]';
+
+            const errEl = document.createElement('p');
+            errEl.className = 'text-xs text-rose-400 text-right';
+            errEl.textContent = msg.error;
+            errRow.appendChild(errEl);
+
+            if (idx === state.history.length - 1) {
+              const retryBtn = document.createElement('button');
+              retryBtn.type = 'button';
+              retryBtn.className = 'px-2 py-0.5 rounded-lg text-[11px] font-semibold bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-500/30 transition';
+              retryBtn.textContent = '↻ Повторить';
+              retryBtn.addEventListener('click', () => processUserMessage(idx));
+              errRow.appendChild(retryBtn);
+            }
+
+            wrap.appendChild(errRow);
+          }
+
+          if (msg.feedback && (msg.feedback.correction || msg.feedback.natural)) {
+            const fb = document.createElement('div');
+            fb.className = 'max-w-[90%] sm:max-w-[80%] rounded-2xl bg-slate-950/90 border border-slate-800 p-3 text-xs space-y-1.5';
+            if (msg.feedback.correction) {
+              fb.innerHTML += `<p class="text-amber-300"><span class="font-semibold">Разбор:</span> ${escapeHtml(msg.feedback.correction)}</p>`;
+            }
+            if (msg.feedback.natural) {
+              fb.innerHTML += `<p class="text-emerald-300"><span class="font-semibold">По-американски естественнее:</span> “${escapeHtml(msg.feedback.natural)}”</p>`;
+            }
+            wrap.appendChild(fb);
+          }
+
+          container.appendChild(wrap);
+        } else {
+          const wrap = document.createElement('div');
+          wrap.className = 'flex flex-col items-start space-y-1.5 max-w-[94%] sm:max-w-[82%]';
+
+          const card = document.createElement('div');
+          card.className = 'w-full rounded-2xl rounded-tl-sm bg-slate-950 border border-slate-800 p-3.5 space-y-2.5';
+
+          const textEl = document.createElement('p');
+          textEl.className = 'text-sm text-slate-100 leading-relaxed';
+          textEl.textContent = msg.english;
+          card.appendChild(textEl);
+
+          if (msg._showRu && msg.ruTranslation) {
+            const ruEl = document.createElement('p');
+            ruEl.className = 'text-xs text-cyan-300/90 border-t border-slate-800/80 pt-2';
+            ruEl.textContent = msg.ruTranslation;
+            card.appendChild(ruEl);
+          }
+
+          if (Array.isArray(msg.words) && msg.words.length > 0) {
+            const chipsRow = document.createElement('div');
+            chipsRow.className = 'flex flex-wrap items-center gap-1.5 pt-1';
+            const lbl = document.createElement('span');
+            lbl.className = 'text-[11px] text-slate-500 mr-0.5';
+            lbl.textContent = 'В словарь:';
+            chipsRow.appendChild(lbl);
+
+            msg.words.forEach(w => {
+              const saved = isWordSaved(w.en);
+              const chip = document.createElement('button');
+              chip.type = 'button';
+              chip.className = saved
+                ? 'px-2 py-0.5 rounded-lg text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 cursor-default'
+                : 'px-2 py-0.5 rounded-lg text-[11px] font-medium bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-500/30 transition';
+              chip.textContent = saved ? `${w.en} ✓` : `${w.en} +`;
+              if (!saved) {
+                chip.addEventListener('click', () => addWordToVocab(w.en, w.ru, w.ex || msg.english, w.ipa || ''));
+              }
+              chipsRow.appendChild(chip);
+            });
+            card.appendChild(chipsRow);
+          }
+
+          wrap.appendChild(card);
+
+          const actions = document.createElement('div');
+          actions.className = 'flex items-center gap-3 px-1';
+
+          const listenBtn = document.createElement('button');
+          listenBtn.type = 'button';
+          listenBtn.className = 'text-xs text-slate-400 hover:text-indigo-300 flex items-center gap-1 py-1';
+          listenBtn.innerHTML = '<span>🔊</span><span>Послушать</span>';
+          listenBtn.addEventListener('click', () => speakText(msg.english, true));
+
+          const slowBtn = document.createElement('button');
+          slowBtn.type = 'button';
+          slowBtn.className = 'text-xs text-slate-400 hover:text-amber-300 flex items-center gap-1 py-1';
+          slowBtn.innerHTML = '<span>🐢</span><span>Медленно</span>';
+          slowBtn.addEventListener('click', () => speakText(msg.english, true, 0.7));
+
+          const trBtn = document.createElement('button');
+          trBtn.type = 'button';
+          trBtn.className = 'text-xs text-slate-400 hover:text-cyan-300 flex items-center gap-1 py-1';
+          trBtn.innerHTML = `<span>🌐</span><span>${msg._showRu ? 'Скрыть перевод' : 'Перевод'}</span>`;
+          trBtn.addEventListener('click', () => {
+            state.history[idx]._showRu = !state.history[idx]._showRu;
+            saveState();
+            renderChat();
+          });
+
+          actions.appendChild(listenBtn);
+          actions.appendChild(slowBtn);
+          actions.appendChild(trBtn);
+          wrap.appendChild(actions);
+
+          container.appendChild(wrap);
+        }
+      });
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // ==================== GEMINI 3 API ====================
+    function buildSystemPrompt() {
+      const p = PERSONAS[state.voiceGender] || PERSONAS.male;
+      const topic = getActiveSubtopicObj(state.mode);
+      const topicLine = topic ? `Active subtopic focus: ${topic.promptContext}` : '';
+
+      return `You are ${p.name}, a friendly, practical American English tutor helping a Russian speaker (currently around ${state.level} level) improve spoken US English and listening comprehension.
+Use natural General American spelling and everyday US expressions.
+Current mode: ${state.mode}. ${topicLine}
+Placement question step: ${state.placementStep} of 6.
+Keep English replies clear, conversational, and appropriate for ${state.level} (gently stretching toward B1 without overwhelming).
+Respond strictly as valid JSON with this exact schema:
+{
+  "reply_en": "Your spoken response and next question/prompt in US English (1-3 concise sentences)",
+  "reply_ru": "Accurate Russian translation of reply_en",
+  "correction": "Brief grammar/word-choice feedback in Russian on the user's message, or null if grammar is fine",
+  "natural_phrasing": "More natural American English way to say what the user meant, or null if already natural",
+  "suggested_words": [
+    {"en": "useful US phrase or word", "ipa": "/US phonetic transcription/", "ru": "русский перевод", "ex": "short example sentence"}
+  ],
+  "detected_cefr": "A1 or A2 or B1 or B2",
+  "placement_done": false
+}
+If mode is "placement": adapt question difficulty to the user's answers across 6 questions. When placementStep >= 6, set "placement_done": true and state the determined CEFR level clearly in reply_ru and reply_en.`;
+    }
+
+    function buildConversationContents() {
+      const filtered = state.history.filter((item, i) => !item.error || i === state.history.length - 1);
+      const sliced = filtered.slice(-10);
+      const firstUserIdx = sliced.findIndex(item => item.role === 'user');
+      const validSlice = firstUserIdx >= 0 ? sliced.slice(firstUserIdx) : sliced;
+
+      return validSlice.map(item => ({
+        role: item.role === 'user' ? 'user' : 'model',
+        parts: [{ text: item.role === 'user' ? item.text : item.english }]
+      }));
+    }
+
+    async function callGemini({ promptText = null, systemInstruction = buildSystemPrompt(), useChatHistory = true } = {}) {
+      const key = (state.apiKey || '').trim();
+      if (!key) {
+        throw new Error('Не задан ключ Gemini API. Открой вкладку «Прогресс» и вставь ключ.');
+      }
+      const model = VALID_MODELS.includes(state.model) ? state.model : DEFAULT_STATE.model;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
+
+      const contents = useChatHistory ? buildConversationContents() : [];
+      if (promptText) {
+        contents.push({
+          role: 'user',
+          parts: [{ text: promptText }]
+        });
+      }
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': key
+        },
+        body: JSON.stringify({
+          systemInstruction: {
+            parts: [{ text: systemInstruction }]
+          },
+          contents,
+          generationConfig: {
+            temperature: 0.7,
+            responseMimeType: 'application/json'
+          }
+        })
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        const apiMsg = errData?.error?.message || `HTTP ${response.status}`;
+        throw new Error(`Ошибка Gemini API: ${apiMsg}`);
+      }
+
+      const data = await response.json();
+      const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      if (!rawText) {
+        throw new Error('Модель вернула пустой ответ.');
+      }
+
+      try {
+        return JSON.parse(rawText);
+      } catch {
+        const match = rawText.match(/\{[\s\S]*\}/);
+        if (match) return JSON.parse(match[0]);
+        return {
+          reply_en: rawText.trim(),
+          reply_ru: 'Перевод недоступен для этого формата ответа.',
+          correction: null,
+          natural_phrasing: null,
+          suggested_words: []
+        };
+      }
+    }
+
+    // ==================== ОТПРАВКА СООБЩЕНИЯ И ПОДСКАЗКА ====================
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    function syncSendButton() {
+      const hasText = chatInput.value.trim().length > 0;
+      sendBtn.disabled = isSending || !hasText;
+    }
+
+    chatInput.addEventListener('focus', () => {
+      if (mobileDrawerOpen) setMobileDrawer(false);
+    });
+
+    chatInput.addEventListener('input', () => {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 112) + 'px';
+      syncSendButton();
+    });
+
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        if (!sendBtn.disabled) {
+          document.getElementById('chat-form').requestSubmit();
+        }
+      }
+    });
+
+    async function processUserMessage(userMsgIndex) {
+      const userMsg = state.history[userMsgIndex];
+      if (!userMsg || isSending) return;
+
+      const p = PERSONAS[state.voiceGender] || PERSONAS.male;
+      isSending = true;
+      userMsg.error = null;
+      syncSendButton();
+      setTutorStatus(`${p.name} печатает...`);
+      renderChat();
+
+      try {
+        const result = await callGemini({ useChatHistory: true });
+
+        userMsg.feedback = {
+          correction: result.correction || null,
+          natural: result.natural_phrasing || null
+        };
+        state.repliesCount += 1;
+
+        if (result.detected_cefr && ['A1', 'A2', 'B1', 'B2'].includes(result.detected_cefr)) {
+          state.level = result.detected_cefr;
+        }
+        if (state.mode === 'placement') {
+          if (result.placement_done || state.placementStep >= 6) {
+            state.levelConfirmed = true;
+            state.placementStep = 6;
+          } else {
+            state.placementStep += 1;
+          }
+        }
+
+        const replyEn = result.reply_en || "Got it! Tell me a bit more about that.";
+        const assistantMsg = {
+          role: 'assistant',
+          english: replyEn,
+          ruTranslation: result.reply_ru || '',
+          words: Array.isArray(result.suggested_words) ? result.suggested_words.slice(0, 4) : [],
+          _showRu: false
+        };
+
+        state.history.push(assistantMsg);
+        saveState();
+        updateModeInfoUI();
+        renderChat();
+        speakText(replyEn, false, null, true);
+      } catch (err) {
+        userMsg.error = err.message || 'Ошибка сети при обращении к API.';
+        saveState();
+        renderChat();
+        showToast(userMsg.error);
+      } finally {
+        isSending = false;
+        syncSendButton();
+        if (!isSpeakingNow) setTutorStatus('Готов к диалогу');
+      }
+    }
+
+    document.getElementById('chat-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text || isSending) return;
+
+      stopAllAudio();
+      if (mobileDrawerOpen) setMobileDrawer(false);
+
+      const userMsgIndex = state.history.length;
+      state.history.push({
+        role: 'user',
+        text,
+        feedback: null,
+        error: null
+      });
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+      saveState();
+
+      await processUserMessage(userMsgIndex);
+    });
+
+    document.getElementById('hint-btn').addEventListener('click', async () => {
+      if (isSending) return;
+      const lastTutor = [...state.history].reverse().find(m => m.role === 'assistant');
+      if (!lastTutor) return;
+
+      if (!state.apiKey) {
+        chatInput.value = 'I usually spend my free time outdoors.';
+        chatInput.dispatchEvent(new Event('input'));
+        showToast('Подставлен пример фразы (добавь ключ API для умных подсказок)');
+        return;
+      }
+
+      isSending = true;
+      syncSendButton();
+      setTutorStatus('Подбираю подсказку...');
+      try {
+        const res = await callGemini({
+          useChatHistory: false,
+          systemInstruction: 'You are an American English tutor helper. Return valid JSON: {"reply_en": "short natural US English reply", "reply_ru": "Russian translation"}.',
+          promptText: `Give a short natural reply in American English at ${state.level} level to this question: "${lastTutor.english}".`
+        });
+        if (res.reply_en) {
+          chatInput.value = res.reply_en;
+          chatInput.dispatchEvent(new Event('input'));
+          showToast(res.reply_ru || 'Подсказка готова');
+        }
+      } catch (err) {
+        showToast(err.message || 'Не удалось получить подсказку');
+      } finally {
+        isSending = false;
+        syncSendButton();
+        setTutorStatus('Готов к диалогу');
+      }
+    });
+
+    // ==================== АВТООЗВУЧКА, HANDS-FREE, СКОРОСТЬ И МИКРОФОН ====================
+    const autoSpeakBtn = document.getElementById('toggle-autospeak-btn');
+    const handsFreeBtn = document.getElementById('toggle-handsfree-btn');
+    const cycleRateBtn = document.getElementById('cycle-rate-btn');
+
+    function syncAudioButtons() {
+      autoSpeakBtn.textContent = state.autoSpeak ? '🔊 ВКЛ' : '🔇 ВЫКЛ';
+      autoSpeakBtn.className = state.autoSpeak
+        ? 'px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 transition whitespace-nowrap'
+        : 'px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 transition whitespace-nowrap';
+
+      handsFreeBtn.textContent = state.handsFree ? '🎙 Авто: ВКЛ' : '🎙 Авто';
+      handsFreeBtn.className = state.handsFree
+        ? 'px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 transition whitespace-nowrap'
+        : 'px-2.5 py-1 rounded-lg text-[11px] sm:text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 transition whitespace-nowrap';
+
+      cycleRateBtn.textContent = `${RATES[state.rateIndex] || 0.9}x`;
+    }
+
+    autoSpeakBtn.addEventListener('click', () => {
+      state.autoSpeak = !state.autoSpeak;
+      if (!state.autoSpeak) stopAllAudio();
+      saveState();
+      syncAudioButtons();
+      showToast(state.autoSpeak ? 'Автоозвучка включена' : 'Автоозвучка выключена');
+    });
+
+    handsFreeBtn.addEventListener('click', () => {
+      state.handsFree = !state.handsFree;
+      saveState();
+      syncAudioButtons();
+      showToast(state.handsFree ? 'Режим без рук: микрофон включится после ответа' : 'Авто-микрофон выключен');
+    });
+
+    cycleRateBtn.addEventListener('click', () => {
+      state.rateIndex = (state.rateIndex + 1) % RATES.length;
+      saveState();
+      syncAudioButtons();
+      showToast(`Скорость речи: ${RATES[state.rateIndex]}x`);
+    });
+
+    const micBtn = document.getElementById('mic-btn');
+    const drillMicBtn = document.getElementById('drill-mic-btn');
+
+    function startMicrophoneListening(target = 'chat') {
+      if (!speechRec) {
+        showToast('Голосовой ввод не поддерживается в этом браузере — открой в Chrome');
+        return;
+      }
+      if (isListeningNow) return;
+      activeMicTarget = target;
+      stopAllAudio();
+      try {
+        speechRec.start();
+      } catch {}
+    }
+
+    (function setupMicrophone() {
+      try {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+          const fallbackToast = () => showToast('Голосовой ввод не поддерживается в этом браузере — открой в Chrome');
+          micBtn.addEventListener('click', fallbackToast);
+          drillMicBtn.addEventListener('click', fallbackToast);
+          return;
+        }
+
+        speechRec = new SpeechRecognition();
+        speechRec.lang = 'en-US';
+        speechRec.interimResults = false;
+
+        speechRec.onstart = () => {
+          isListeningNow = true;
+          const activeBtn = activeMicTarget === 'drill' ? drillMicBtn : micBtn;
+          activeBtn.classList.add('ring-2', 'ring-emerald-400', 'bg-emerald-500/20');
+          setTutorStatus('Слушаю тебя (en-US)...');
+          showToast('Говори по-английски...');
+        };
+        speechRec.onresult = event => {
+          const transcript = event.results?.[0]?.[0]?.transcript || '';
+          if (!transcript) return;
+
+          if (activeMicTarget === 'drill') {
+            const drillInp = document.getElementById('drill-text-input');
+            drillInp.value = transcript;
+          } else {
+            chatInput.value = (chatInput.value ? chatInput.value + ' ' : '') + transcript;
+            chatInput.dispatchEvent(new Event('input'));
+            if (state.handsFree) {
+              setTimeout(() => document.getElementById('chat-form').requestSubmit(), 350);
+            }
+          }
+        };
+        speechRec.onerror = () => {
+          showToast('Не удалось распознать голос — проверь доступ к микрофону');
+        };
+        speechRec.onend = () => {
+          isListeningNow = false;
+          [micBtn, drillMicBtn].forEach(b => b.classList.remove('ring-2', 'ring-emerald-400', 'bg-emerald-500/20'));
+          if (!isSending && !isSpeakingNow) {
+            setTutorStatus('Готов к диалогу');
+          }
+        };
+
+        micBtn.addEventListener('click', () => {
+          try {
+            if (isListeningNow) speechRec.stop();
+            else startMicrophoneListening('chat');
+          } catch {
+            showToast('Микрофон недоступен — открой страницу в Chrome');
+          }
+        });
+      } catch {
+        micBtn.addEventListener('click', () => {
+          showToast('Голосовой ввод недоступен в этом браузере');
+        });
+      }
+    })();
+
+    // ==================== СЛОВАРЬ И ФЛЕШКАРТОЧКИ ====================
+    let fcIndex = 0;
+    let fcFlipped = false;
+
+    function renderVocab() {
+      const listEl = document.getElementById('vocab-list');
+      listEl.innerHTML = '';
+
+      if (!state.vocab.length) {
+        listEl.innerHTML = '<p class="text-sm text-slate-400 col-span-full">Словарь пока пуст. Нажимай на зелёные чипсы в диалоге или кнопку «+ Добавить слово».</p>';
+        return;
+      }
+
+      state.vocab.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'bg-slate-900 border border-slate-800 rounded-2xl p-3.5 flex flex-col justify-between gap-2.5';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <p class="font-bold text-base text-white">${escapeHtml(item.en)}</p>
+                ${item.ipa ? `<p class="text-[11px] text-indigo-300/90">${escapeHtml(item.ipa)}</p>` : ''}
+                <p class="text-xs text-emerald-300 mt-0.5">${escapeHtml(item.ru)}</p>
+              </div>
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-semibold ${item.learned ? 'bg-emerald-500/15 text-emerald-300' : 'bg-slate-800 text-slate-400'}">
+                ${item.learned ? 'Выучено' : 'В изучении'}
+              </span>
+            </div>
+            ${item.ex ? `<p class="text-xs text-slate-400 italic mt-2">“${escapeHtml(item.ex)}”</p>` : ''}
+          </div>
+          <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
+            <div class="flex items-center gap-3">
+              <button type="button" class="speak-word-btn text-xs text-indigo-300 hover:text-indigo-200 font-medium">🔊 Слово</button>
+              ${item.ex ? `<button type="button" class="speak-ex-btn text-xs text-cyan-300 hover:text-cyan-200 font-medium">💬 Пример</button>` : ''}
+            </div>
+            <div class="flex items-center gap-3">
+              <button type="button" class="toggle-learned-btn text-xs text-emerald-400 hover:text-emerald-300 font-medium">
+                ${item.learned ? 'Вернуть' : '✓ Выучил'}
+              </button>
+              <button type="button" class="del-word-btn text-xs text-rose-400 hover:text-rose-300">Удалить</button>
+            </div>
+          </div>
+        `;
+
+        card.querySelector('.speak-word-btn').addEventListener('click', () => speakText(item.en, true));
+        const exBtn = card.querySelector('.speak-ex-btn');
+        if (exBtn) {
+          exBtn.addEventListener('click', () => speakText(item.ex, true));
+        }
+        card.querySelector('.toggle-learned-btn').addEventListener('click', () => {
+          item.learned = !item.learned;
+          saveState();
+          updateVocabCounters();
+          renderVocab();
+        });
+        card.querySelector('.del-word-btn').addEventListener('click', () => {
+          state.vocab = state.vocab.filter(w => w.id !== item.id);
+          saveState();
+          updateVocabCounters();
+          renderVocab();
+        });
+
+        listEl.appendChild(card);
+      });
+
+      syncFlashcard();
+    }
+
+    function syncFlashcard() {
+      const box = document.getElementById('flashcard-box');
+      if (box.classList.contains('hidden')) return;
+      if (!state.vocab.length) {
+        document.getElementById('fc-front-word').textContent = 'Нет карточек';
+        document.getElementById('fc-front-ipa').textContent = '';
+        document.getElementById('fc-back-tr').textContent = 'Добавь слова в словарь';
+        document.getElementById('fc-back-ex').textContent = '';
+        return;
+      }
+      fcIndex = ((fcIndex % state.vocab.length) + state.vocab.length) % state.vocab.length;
+      const cur = state.vocab[fcIndex];
+      fcFlipped = false;
+      document.getElementById('fc-card-inner').classList.remove('rotate-y-180');
+      document.getElementById('fc-counter').textContent = `Карточка ${fcIndex + 1} из ${state.vocab.length}`;
+      document.getElementById('fc-front-word').textContent = cur.en;
+      document.getElementById('fc-front-ipa').textContent = cur.ipa || '';
+      document.getElementById('fc-back-tr').textContent = cur.ru;
+      document.getElementById('fc-back-ex').textContent = cur.ex || '';
+    }
+
+    document.getElementById('toggle-flashcards-btn').addEventListener('click', () => {
+      const box = document.getElementById('flashcard-box');
+      box.classList.toggle('hidden');
+      syncFlashcard();
+    });
+
+    document.getElementById('fc-card').addEventListener('click', () => {
+      fcFlipped = !fcFlipped;
+      document.getElementById('fc-card-inner').classList.toggle('rotate-y-180', fcFlipped);
+    });
+
+    document.getElementById('fc-speak-btn').addEventListener('click', () => {
+      const cur = state.vocab[fcIndex];
+      if (cur) speakText(cur.en, true);
+    });
+
+    document.getElementById('fc-speak-ex-btn').addEventListener('click', () => {
+      const cur = state.vocab[fcIndex];
+      if (cur && cur.ex) speakText(cur.ex, true);
+      else showToast('У этой карточки нет примера');
+    });
+
+    document.getElementById('fc-repeat-btn').addEventListener('click', () => {
+      if (state.vocab[fcIndex]) {
+        state.vocab[fcIndex].learned = false;
+        saveState();
+        updateVocabCounters();
+      }
+      fcIndex += 1;
+      syncFlashcard();
+    });
+
+    document.getElementById('fc-know-btn').addEventListener('click', () => {
+      if (state.vocab[fcIndex]) {
+        state.vocab[fcIndex].learned = true;
+        saveState();
+        updateVocabCounters();
+      }
+      fcIndex += 1;
+      syncFlashcard();
+    });
+
+    // Модалка добавления слова
+    const wordModal = document.getElementById('add-word-modal');
+    const openWordModal = () => {
+      document.getElementById('new-word-en').value = '';
+      document.getElementById('new-word-ru').value = '';
+      document.getElementById('new-word-ex').value = '';
+      document.getElementById('new-word-ipa').value = '';
+      wordModal.classList.remove('hidden');
+      document.getElementById('new-word-en').focus();
+    };
+    const closeWordModal = () => wordModal.classList.add('hidden');
+
+    document.getElementById('open-add-word-btn').addEventListener('click', openWordModal);
+    document.getElementById('vocab-add-btn').addEventListener('click', openWordModal);
+    document.getElementById('close-word-modal').addEventListener('click', closeWordModal);
+    document.getElementById('cancel-word-modal').addEventListener('click', closeWordModal);
+    wordModal.addEventListener('click', e => {
+      if (e.target === wordModal) closeWordModal();
+    });
+
+    document.getElementById('ai-translate-word-btn').addEventListener('click', async () => {
+      const en = document.getElementById('new-word-en').value.trim();
+      if (!en) {
+        showToast('Сначала введи слово на английском');
+        return;
+      }
+      if (!state.apiKey) {
+        showToast('Добавь ключ Gemini API во вкладке «Прогресс»');
+        return;
+      }
+      showToast('Перевожу через Gemini 3...');
+      try {
+        const res = await callGemini({
+          useChatHistory: false,
+          systemInstruction: 'You are an American English-Russian dictionary assistant. Return strictly valid JSON: {"ru": "natural Russian translation", "ipa": "/US IPA/", "ex": "short natural US English example sentence"}.',
+          promptText: `Translate and provide US IPA + example for: "${en}"`
+        });
+        if (res.ru) document.getElementById('new-word-ru').value = res.ru;
+        if (res.ex) document.getElementById('new-word-ex').value = res.ex;
+        if (res.ipa) document.getElementById('new-word-ipa').value = res.ipa;
+        showToast('Перевод подставлен');
+      } catch (err) {
+        showToast(err.message || 'Ошибка перевода');
+      }
+    });
+
+    document.getElementById('save-word-btn').addEventListener('click', () => {
+      const en = document.getElementById('new-word-en').value.trim();
+      const ru = document.getElementById('new-word-ru').value.trim();
+      const ex = document.getElementById('new-word-ex').value.trim();
+      const ipa = document.getElementById('new-word-ipa').value.trim();
+      if (!en) {
+        showToast('Введи слово или фразу на английском');
+        return;
+      }
+      addWordToVocab(en, ru || 'перевод не указан', ex, ipa);
+      closeWordModal();
+      if (!document.getElementById('tab-vocab').classList.contains('hidden')) {
+        renderVocab();
+      }
+    });
+
+    // ==================== ПРОГРЕСС, GIST, ГОЛОС, API И ЭКСПОРТ/ИМПОРТ ====================
+    function renderProgress() {
+      document.getElementById('stat-level').textContent = state.level;
+      document.getElementById('stat-level-sub').textContent = state.levelConfirmed ? 'Подтверждён тестом' : 'Предварительный';
+      document.getElementById('stat-lessons').textContent = `${(state.completedLessons || []).length}/${COURSE_LESSONS.length}`;
+      document.getElementById('stat-streak-sub').textContent = `Серия: ${state.streak} дн. 🔥`;
+      document.getElementById('stat-replies').textContent = state.repliesCount;
+      updateVocabCounters();
+
+      document.getElementById('gist-profile-input').value = state.gistProfile || 'Папа';
+      document.getElementById('gist-id-input').value = state.gistId || '';
+      document.getElementById('gist-token-input').value = state.gistToken || '';
+      syncGistUI();
+
+      document.getElementById('settings-voice-gender').value = state.voiceGender;
+      document.getElementById('settings-tts-engine').value = state.ttsEngine;
+
+      const keyInput = document.getElementById('api-key-input');
+      const modelSelect = document.getElementById('api-model-select');
+      const pill = document.getElementById('api-status-pill');
+
+      keyInput.value = state.apiKey || '';
+      if (VALID_MODELS.includes(state.model)) {
+        modelSelect.value = state.model;
+      }
+
+      if (state.apiKey) {
+        pill.textContent = `Ключ задан (${state.model})`;
+        pill.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30';
+      } else {
+        pill.textContent = 'Ключ не задан';
+        pill.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30';
+      }
+    }
+
+    document.getElementById('toggle-gist-token-vis').addEventListener('click', () => {
+      const inp = document.getElementById('gist-token-input');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    });
+
+    document.getElementById('gist-connect-btn').addEventListener('click', async () => {
+      const profile = document.getElementById('gist-profile-input').value.trim() || 'Папа';
+      const gistId = document.getElementById('gist-id-input').value.trim();
+      const token = document.getElementById('gist-token-input').value.trim();
+
+      if (!token) {
+        showToast('Вставь GitHub Personal Access Token (ghp_...)');
+        return;
+      }
+
+      state.gistProfile = profile;
+      state.gistToken = token;
+      state.gistId = gistId;
+      saveState(false);
+
+      try {
+        if (!gistId) {
+          syncGistUI('syncing');
+          const newId = await createNewGist();
+          document.getElementById('gist-id-input').value = newId;
+          syncGistUI('ok');
+          showToast(`Gist создан! ID: ${newId}`);
+        } else {
+          await pullFromGist(false);
+        }
+      } catch (err) {
+        syncGistUI('error');
+        showToast(err.message || 'Ошибка подключения к GitHub Gist');
+      }
+    });
+
+    document.getElementById('gist-pull-btn').addEventListener('click', () => {
+      state.gistProfile = document.getElementById('gist-profile-input').value.trim() || 'Папа';
+      state.gistId = document.getElementById('gist-id-input').value.trim();
+      state.gistToken = document.getElementById('gist-token-input').value.trim();
+      saveState(false);
+      pullFromGist(false);
+    });
+
+    document.getElementById('gist-push-btn').addEventListener('click', () => {
+      state.gistProfile = document.getElementById('gist-profile-input').value.trim() || 'Папа';
+      state.gistId = document.getElementById('gist-id-input').value.trim();
+      state.gistToken = document.getElementById('gist-token-input').value.trim();
+      saveState(false);
+      pushToGist(false);
+    });
+
+    document.getElementById('settings-voice-gender').addEventListener('change', e => {
+      state.voiceGender = e.target.value;
+      saveState();
+      syncPersonaUI();
+      const p = PERSONAS[state.voiceGender];
+      showToast(`Выбран репетитор: ${p.name}`);
+    });
+
+    document.getElementById('settings-tts-engine').addEventListener('change', e => {
+      state.ttsEngine = e.target.value;
+      saveState();
+      showToast(state.ttsEngine === 'gemini' ? 'Озвучка: Gemini 3 Neural Voice' : 'Озвучка: Браузерный синтезатор');
+    });
+
+    document.getElementById('test-voice-btn').addEventListener('click', () => {
+      const p = PERSONAS[state.voiceGender] || PERSONAS.male;
+      speakText(`Hey! I'm ${p.name}, and I'm excited to practice American English with you today!`, true, null, false);
+    });
+
+    document.getElementById('toggle-key-visibility').addEventListener('click', () => {
+      const inp = document.getElementById('api-key-input');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    });
+
+    document.getElementById('save-api-btn').addEventListener('click', () => {
+      state.apiKey = document.getElementById('api-key-input').value.trim();
+      state.model = document.getElementById('api-model-select').value;
+      state.voiceGender = document.getElementById('settings-voice-gender').value;
+      state.ttsEngine = document.getElementById('settings-tts-engine').value;
+      saveState();
+      syncPersonaUI();
+      renderProgress();
+      showToast('Настройки сохранены');
+    });
+
+    document.getElementById('clear-api-btn').addEventListener('click', () => {
+      state.apiKey = '';
+      document.getElementById('api-key-input').value = '';
+      saveState();
+      renderProgress();
+      showToast('Ключ API удалён из браузера');
+    });
+
+    document.getElementById('export-data-btn').addEventListener('click', () => {
+      const payload = JSON.stringify(buildSyncPayload(), null, 2);
+      const blob = new Blob([payload], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `alex-emma-${(state.gistProfile || 'progress').toLowerCase()}-${getLocalDateStr(0)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Прогресс выгружен в JSON');
+    });
+
+    document.getElementById('import-data-input').addEventListener('change', e => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const imported = JSON.parse(String(reader.result || '{}'));
+          if (typeof imported !== 'object' || imported === null) throw new Error();
+          applyCloudPayload(imported);
+          saveState(true);
+          showToast('Данные успешно импортированы');
+        } catch {
+          showToast('Некорректный JSON-файл');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+    (function init() {
+      saveState(false);
+      syncPersonaUI();
+      syncGistUI();
+      syncAudioButtons();
+      updateVocabCounters();
+      renderSubtopicPicker();
+      updateModeInfoUI();
+      syncModeButtons(state.mode || 'placement');
+      if (!state.history.length) {
+        startMode(state.mode || 'placement', false);
+      } else {
+        renderChat();
+      }
+      // Фоновая загрузка актуального прогресса при запуске, если Gist подключён
+      if (state.gistToken && state.gistId) {
+        pullFromGist(true);
+      }
+    })();
+  </script>
+</body>
+</html>
